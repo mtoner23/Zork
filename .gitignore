@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# XCode Only Dependencies
+Zork_Project/*
+
+# VS Only Dependencies
+Zork/*
