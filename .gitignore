@@ -33,6 +33,8 @@
 
 # XCode Only Dependencies
 Zork_Project/*
+.DS_Store
 
 # VS Only Dependencies
 Zork/*
+
