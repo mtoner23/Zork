@@ -13,19 +13,21 @@ using namespace std;
 using namespace rapidxml;
 
 struct trigger_condition {
-	string has;
-	string object;
-	string owner;
+	string has = "";
+	string object = "";
+	string owner = "";
+	string status = "";
 };
 
 class Trigger {
 public:
 	Trigger(xml_node <> * root);
 	~Trigger();
-	string type;
-	string command;
+	void print_contents(void);
+	string type = "";
+	string command = "";
 	trigger_condition condition;
-	string print;
+	string print = "";
 };
 
 #endif

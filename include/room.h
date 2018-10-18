@@ -18,15 +18,16 @@ public:
 	// Constructors & Deconstructors
 	Room(xml_node <> * root);
 	~Room();
+	void print_contents(void);
 	// Member variables
-	string name;
-	string status;
-	string type;
-	string description;
-	string north;
-	string south;
-	string west;
-	string east;
+	string name = "";
+	string status = "";
+	string type = "";
+	string description = "";
+	string north = "";
+	string south = "";
+	string west = "";
+	string east = "";
 	vector <string> containers;
 	vector <string> items;
 	vector <string> creatures;

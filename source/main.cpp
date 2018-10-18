@@ -41,7 +41,9 @@ int main(int argc, const char * argv[]) {
 
 	for (xml_node<>* curr_node = root->first_node(); curr_node; curr_node = curr_node->next_sibling()) {
 		if (string(curr_node->name()) == string("room")) {
-			rooms.push_back(new Room(curr_node));
+			Room* temp = new Room(curr_node);
+			temp->print_contents();
+			rooms.push_back(temp);
 		}
 	}
 	//xml_node<>* curr_node = root->first_node();

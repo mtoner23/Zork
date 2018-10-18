@@ -8,8 +8,8 @@
 #include "../include/room.h"
 #include "../include/Trigger.h"
 
-#define DEBUG_FLAG 1
-#ifdef DEBUG_FLAG
+#define DEBUG_FLAG 0
+#if DEBUG_FLAG
 #	define DEBUG(...) printf(__VA_ARGS__)
 #else
 #	define DEBUG(x,...)
@@ -19,6 +19,31 @@ using namespace std;
 using namespace rapidxml;
 
 Room::~Room(){}
+
+void Room::print_contents(void) {
+	printf("Room Name: %s\n", (this->name).c_str());
+	printf("Room Status: %s\n", this->status.c_str());
+	printf("Room Description: %s\n", this->description.c_str());
+	printf("Room Type: %s\n", this->type.c_str());
+	printf("NORTH is %s\n", this->north.c_str());
+	printf("SOUTH is %s\n", this->south.c_str());
+	printf("EAST is %s\n", this->east.c_str());
+	printf("WEST is %s\n", this->west.c_str());
+	
+	for (unsigned int i = 0; i < items.size(); i++) {
+		printf("Item: %s\n", items[i].c_str());
+	}
+	for (unsigned int i = 0; i < containers.size(); i++) {
+		printf("Container: %s\n", containers[i].c_str());
+	}
+	for (unsigned int i = 0; i < creatures.size(); i++) {
+		printf("Creature: %s\n", creatures[i].c_str());
+	}
+	for (unsigned int i = 0; i < triggers.size(); i++) {
+		triggers[i]->print_contents();
+	}
+	
+}
 
 Room::Room(xml_node <> * root) {
 
@@ -49,6 +74,7 @@ Room::Room(xml_node <> * root) {
 		}
 		else if (string(curr_node->name()) == string("creature")) {
 			creatures.push_back(curr_node->value());
+			DEBUG("Creature: %s\n", curr_node->value());
 		}
 		else if (string(curr_node->name()) == string("trigger")) {
 			triggers.push_back(new Trigger(curr_node));
