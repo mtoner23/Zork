@@ -12,13 +12,13 @@
 using namespace std;
 using namespace rapidxml;
 
-struct Condition {
+struct attack_condition {
 	string object;
 	string status;
 };
 
 struct Attack {
-	Condition condition;
+	attack_condition condition;
 	string print;
 	vector <string> actions;
 };

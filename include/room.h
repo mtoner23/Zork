@@ -8,6 +8,7 @@
 #include <vector>
 #include <map>
 #include <iterator>
+#include "../include/Trigger.h"
 
 using namespace std;
 using namespace rapidxml;
@@ -22,11 +23,14 @@ public:
 	string status;
 	string type;
 	string description;
-	map <string, string> border;
+	string north;
+	string south;
+	string west;
+	string east;
 	vector <string> containers;
 	vector <string> items;
 	vector <string> creatures;
-	vector <string> triggers;
+	vector <Trigger *> triggers;
 };
 
 #endif
