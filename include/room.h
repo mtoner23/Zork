@@ -9,11 +9,12 @@
 #include <map>
 #include <iterator>
 #include "../include/Trigger.h"
+#include "../include/ZorkObject.h"
 
 using namespace std;
 using namespace rapidxml;
 
-class Room {
+class Room: public ZorkObject {
 public:
 	// Constructors & Deconstructors
 	Room(xml_node <> * root);

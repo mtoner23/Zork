@@ -19,15 +19,16 @@ using namespace rapidxml;
 
 class Zork {
 public:
-	Zork(char* filename);
+	Zork(const char* filename);
 	~Zork();
 	string usr_input = "";
-	string curr_room;
+	string curr_room = "Entrance";
 	vector<Item*> inventory;
 	vector<Room*> rooms;
 	vector<Item*> items;
 	vector<Container*> containers;
 	vector<Creature*> creatures;
+	void play(void);
 private:
 	int setup(void);
 };

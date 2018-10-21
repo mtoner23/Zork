@@ -9,6 +9,7 @@
 #include <map>
 #include <iterator>
 #include "../include/Trigger.h"
+#include "../include/ZorkObject.h"
 
 using namespace std;
 using namespace rapidxml;
@@ -18,7 +19,7 @@ struct turn_on {
 	string action;
 };
 
-class Item {
+class Item: public ZorkObject {
 public:
 	// Constructors & Deconstructors
 	Item(xml_node <> * root);
