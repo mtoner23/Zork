@@ -28,6 +28,7 @@ public:
 	string command = "";
 	trigger_condition condition;
 	string print = "";
+	string action = "";
 };
 
 #endif

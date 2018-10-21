@@ -8,6 +8,7 @@
 #include <vector>
 #include <map>
 #include <iterator>
+#include "../include/Trigger.h"
 
 using namespace std;
 using namespace rapidxml;
@@ -22,13 +23,14 @@ public:
 	// Constructors & Deconstructors
 	Item(xml_node <> * root);
 	~Item();
+	void print_contents(void);
 	// Member variables
 	string name;
 	string status;
 	string description;
 	string writing;
 	turn_on turnon;
-	vector <string> triggers;
+	vector <Trigger *> triggers;
 };
 
 #endif

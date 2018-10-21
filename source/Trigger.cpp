@@ -51,7 +51,11 @@ Trigger::Trigger(xml_node <> * root) {
 		}
 		else if (string(curr_node->name()) == string("print")) {
 			this->print = curr_node->value();
-			DEBUG("Trigger print: %s\n", this->print.c_str());
+			DEBUG("Trigger Print: %s\n", this->print.c_str());
+		}
+		else if (string(curr_node->name()) == string("action")) {
+			this->action = curr_node->value();
+			DEBUG("Trigger Print: %s\n", this->action.c_str());
 		}
 	}
 }
@@ -65,5 +69,6 @@ void Trigger::print_contents(void) {
 	printf("Trigger Condition object: %s\n", this->condition.object.c_str());
 	printf("Trigger Condition owner: %s\n", this->condition.owner.c_str());
 	printf("Trigger Condition status: %s\n", this->condition.status.c_str());
-	printf("Trigger Print: %s\n", this->command.c_str());
+	printf("Trigger Print: %s\n", this->print.c_str());
+	printf("Trigger Action: %s\n", this->action.c_str());
 }

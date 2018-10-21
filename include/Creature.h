@@ -8,18 +8,19 @@
 #include <vector>
 #include <map>
 #include <iterator>
+#include "../include/Trigger.h"
 
 using namespace std;
 using namespace rapidxml;
 
 struct attack_condition {
-	string object;
-	string status;
+	string object = "";
+	string status = "";
 };
 
 struct Attack {
 	attack_condition condition;
-	string print;
+	string print = "";
 	vector <string> actions;
 };
 
@@ -28,13 +29,14 @@ public:
 	// Constructors & Deconstructors
 	Creature(xml_node <> * root);
 	~Creature();
+	void print_contents(void);
 	// Member variables
-	string name;
-	string status;
-	string description;
+	string name = "";
+	string status = "";
+	string description = "";
 	vector <string> vulnerabilities;
 	Attack attack;
-	vector <string> triggers;
+	vector <Trigger *> triggers;
 };
 
 #endif
