@@ -72,3 +72,4 @@ void Trigger::print_contents(void) {
 	printf("Trigger Print: %s\n", this->print.c_str());
 	printf("Trigger Action: %s\n", this->action.c_str());
 }
+>>>>>>> 8cd3bdb85a6b6b4a328568a158b7e6a09987fb5e

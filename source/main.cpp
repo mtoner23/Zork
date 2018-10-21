@@ -36,8 +36,14 @@ int main(int argc, const char * argv[]) {
 	vector<Container*> containers;
 	vector<Creature*> creatures;
 
-	//ifstream theFile (argv[1]);
-	ifstream theFile("sample.txt.xml");
+	ifstream theFile (argv[1]);
+
+    if(theFile.fail()){
+        cout << "FILE: "<< argv[1] << " failed to open." << endl;
+        return 1;
+    }
+    
+    //ifstream theFile("sample.txt.xml");
 	//ifstream theFile("roomsample.xml");
 	vector<char> buffer((istreambuf_iterator<char>(theFile)), istreambuf_iterator<char>());
 	buffer.push_back('\0');
@@ -45,7 +51,7 @@ int main(int argc, const char * argv[]) {
 
 	root = doc.first_node("map");
 
-	for (xml_node<>* curr_node = root->first_node(); curr_node; curr_node = curr_node->next_sibling()) {
+	for (xml_node<>* curr_node = root->first_node(); curr_node != NULL; curr_node = curr_node->next_sibling()) {
 		if (string(curr_node->name()) == string("room")) {
 			Room* temp = new Room(curr_node);
 			//temp->print_contents();
