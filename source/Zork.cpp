@@ -158,7 +158,7 @@ Item* Zork::find_item(string item) {
             return items[i];
         }
     }
-    cout << "ERROR: Could Not Find room" << endl;
+    cout << "ERROR: Could Not Find item" << endl;
     return NULL;
 }
 
