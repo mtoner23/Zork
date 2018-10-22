@@ -31,6 +31,7 @@ public:
 	void play(void);
     void process_command();
     Room* find_room(string value);
+    Item* find_item(string);
 private:
 	int setup(void);
 };

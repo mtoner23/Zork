@@ -109,8 +109,6 @@ void Zork::process_command(){
                 cout << curr_room->items[i] << ", ";
             }
             cout << curr_room->items[i] << endl;
-        }else{
-            cout << "Inventory: Empty" << endl;
         }
     }else if (usr_input == "i"){
         if(inventory.size() != 0){
@@ -129,9 +127,36 @@ void Zork::process_command(){
         }else{
             cout << "This isn't the exit" << endl;
         }
+    }else if(usr_input.substr(0,4) == "take"){
+        string item = usr_input.substr(5); // String starting after word take
+        bool found = 0;
+        for(int i = 0; i < curr_room->items.size(); i ++){
+            if(curr_room->items[i] == item){
+                curr_room->items.erase(curr_room->items.begin()+i);
+                found = 1;
+                break;
+            }
+        }
+        if(found){
+            inventory.push_back(find_item(item));
+            cout << "Taken." << endl;
+        }else{
+            cout << "There is no item \"" << item << "\" in this room";
+        }
     }else{
         cout << "I do not recognize that command" << endl;
     }
+}
+
+Item* Zork::find_item(string item) {
+    // NOTE: Error if room is not in list (Not sure if it matters)
+    for (unsigned int i = 0; i < rooms.size(); i++) {
+        if (string(items[i]->name) == item) {
+            return items[i];
+        }
+    }
+    cout << "ERROR: Could Not Find room" << endl;
+    return NULL;
 }
 
 Room* Zork::find_room(string value) {
