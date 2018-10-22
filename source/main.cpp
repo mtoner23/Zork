@@ -27,6 +27,7 @@ int main(int argc, const char * argv[]) {
     
 	Zork *game = new Zork(argv[1]);
 	game->play();
+    
 
     return 0;
 }

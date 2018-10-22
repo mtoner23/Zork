@@ -17,7 +17,7 @@ using namespace std;
 using namespace rapidxml;
 
 // Function Declarations
-Room* find_room(vector<Room*> list, string value);
+
 
 Zork::~Zork(void){}
 
@@ -58,26 +58,89 @@ Zork::Zork(const char* filename) {
 			creatures.push_back(temp);
 		}
 	}
+    curr_room = find_room("Entrance");
 }
 
 void Zork::play(void) {
-	Room* room_ptr = find_room(rooms, "Entrance");
-	cout << room_ptr->description << endl;
+	cout << curr_room->description << endl;
 	while (true) {
 		getline(cin, this->usr_input);
-		if (usr_input == "quit") {
-			cout << "Goodbye!!" << endl;
-			return;
-		}
+        process_command();
 	}
 }
 
-Room* find_room(vector<Room*> list, string value) {
+void Zork::process_command(){
+    if (usr_input == "quit") {
+        cout << "Goodbye!!" << endl;
+        return;
+    }else if (usr_input == "n"){
+        if(curr_room->north != ""){
+            curr_room = find_room(curr_room->north);
+            cout << curr_room->description << endl;
+        }else{
+            cout << "You cannot go north" << endl;
+        }
+    }else if (usr_input == "s"){
+        if(curr_room->south != ""){
+            curr_room = find_room(curr_room->south);
+            cout << curr_room->description << endl;
+        }else{
+            cout << "You cannot go south" << endl;
+        }
+    }else if (usr_input == "e"){
+        if(curr_room->east != ""){
+            curr_room = find_room(curr_room->east);
+            cout << curr_room->description << endl;
+        }else{
+            cout << "You cannot go east" << endl;
+        }
+    }else if (usr_input == "w"){
+        if(curr_room->west != ""){
+            curr_room = find_room(curr_room->west);
+            cout << curr_room->description << endl;
+        }else{
+            cout << "You cannot go west" << endl;
+        }
+    }else if (usr_input == "l" || usr_input == "ls"){
+        cout << curr_room->description << endl;
+        if(curr_room->items.size() != 0){
+            int i;
+            for(i = 0; i < curr_room->items.size() - 1; i++){
+                cout << curr_room->items[i] << ", ";
+            }
+            cout << curr_room->items[i] << endl;
+        }else{
+            cout << "Inventory: Empty" << endl;
+        }
+    }else if (usr_input == "i"){
+        if(inventory.size() != 0){
+            int i;
+            for(i = 0; i < inventory.size() - 1; i++){
+                cout << inventory[i]->name << ", ";
+            }
+            cout << inventory[i]->name << endl;
+        }else{
+            cout << "Inventory: Empty" << endl;
+        }
+    }else if(usr_input == "open exit" || usr_input == "exit"){
+        if(curr_room->type == "exit"){
+            cout << "Game Over" << endl;
+            exit(0);
+        }else{
+            cout << "This isn't the exit" << endl;
+        }
+    }else{
+        cout << "I do not recognize that command" << endl;
+    }
+}
+
+Room* Zork::find_room(string value) {
 	// NOTE: Error if room is not in list (Not sure if it matters)
-	for (unsigned int i = 0; i < list.size(); i++) {
-		if (string(list[i]->name) == value) {
-			return list[i];
+	for (unsigned int i = 0; i < rooms.size(); i++) {
+		if (string(rooms[i]->name) == value) {
+			return rooms[i];
 		}
 	}
+    cout << "ERROR: Could Not Find room" << endl;
 	return NULL;
 }
