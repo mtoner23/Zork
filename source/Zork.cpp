@@ -63,16 +63,18 @@ Zork::Zork(const char* filename) {
 
 void Zork::play(void) {
 	cout << curr_room->description << endl;
-	while (true) {
+    int out = 0;
+	while (out == 0) {
 		getline(cin, this->usr_input);
-        process_command();
+        out = process_command();
 	}
+    return;
 }
 
-void Zork::process_command(){
+int Zork::process_command(){
     if (usr_input == "quit") {
         cout << "Goodbye!!" << endl;
-        return;
+        return 1;
     }else if (usr_input == "n"){
         if(curr_room->north != ""){
             curr_room = find_room(curr_room->north);
@@ -123,7 +125,7 @@ void Zork::process_command(){
     }else if(usr_input == "open exit" || usr_input == "exit"){
         if(curr_room->type == "exit"){
             cout << "Game Over" << endl;
-            exit(0);
+            return 1;
         }else{
             cout << "This isn't the exit" << endl;
         }
@@ -146,6 +148,7 @@ void Zork::process_command(){
     }else{
         cout << "I do not recognize that command" << endl;
     }
+    return 0;
 }
 
 Item* Zork::find_item(string item) {

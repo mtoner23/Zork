@@ -29,7 +29,7 @@ public:
 	vector<Container*> containers;
 	vector<Creature*> creatures;
 	void play(void);
-    void process_command();
+    int process_command();
     Room* find_room(string value);
     Item* find_item(string);
 private:
