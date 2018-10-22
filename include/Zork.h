@@ -22,13 +22,15 @@ public:
 	Zork(const char* filename);
 	~Zork();
 	string usr_input = "";
-	string curr_room = "Entrance";
+    Room * curr_room;
 	vector<Item*> inventory;
 	vector<Room*> rooms;
 	vector<Item*> items;
 	vector<Container*> containers;
 	vector<Creature*> creatures;
 	void play(void);
+    void process_command();
+    Room* find_room(string value);
 private:
 	int setup(void);
 };
