@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 #include <stdio.h>
-#include "../include/trigger.h"
+#include "../include/Trigger.h"
 
 #define DEBUG_FLAG 0
 #if DEBUG_FLAG
