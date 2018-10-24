@@ -173,9 +173,25 @@ int Zork::process_command(){
         }
         if(item != NULL){
             inventory.push_back(item);
-            cout << "Taken." << endl;
+            cout << "Item \"" << item_name << "\" added to inventory"<< endl;
         }else{
-            cout << "There is no item \"" << item << "\" in this room" << endl;
+            cout << "There is no item \"" << item_name << "\" in this room" << endl;
+        }
+    }else if(usr_input.substr(0,4) == "drop"){
+        string item_name = usr_input.substr(5); // String starting after word take
+        Item* item = NULL;
+        for(int i = 0; i < inventory.size(); i ++){
+            if(inventory[i]->name == item_name){
+                item = inventory[i];
+                inventory.erase(inventory.begin()+i);
+                break;
+            }
+        }
+        if(item != NULL){
+            curr_room->items.push_back(item);
+            cout << item->name << " dropped." << endl;
+        }else{
+            cout << "There is no item \"" << item_name << "\" in your inventory" << endl;
         }
     }else{
         cout << "I do not recognize that command" << endl;

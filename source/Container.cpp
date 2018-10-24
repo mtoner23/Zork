@@ -8,7 +8,7 @@
 #include "../include/Container.h"
 #include "../include/Trigger.h"
 
-#define DEBUG_FLAG 1
+#define DEBUG_FLAG 0
 #if DEBUG_FLAG
 #	define DEBUG(...) printf(__VA_ARGS__)
 #else
