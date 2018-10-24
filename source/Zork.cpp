@@ -79,7 +79,6 @@ Zork::Zork(const char* filename) {
         for(int j = 0; j < rooms[i]->containers.size(); j++){
             //Container Allocation
             rooms[i]->containers[j] = find_container(rooms[i]->containers[j]->name);
-            cout << rooms[i]->containers[j]->name << endl;
             for(int k = 0; k < rooms[i]->containers[j]->items.size(); k++){
                 //Container Items allocation
                 rooms[i]->containers[j]->items[k] = find_item(rooms[i]->containers[j]->items[k]->name);
