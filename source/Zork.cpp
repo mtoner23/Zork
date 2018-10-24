@@ -75,6 +75,12 @@ Zork::Zork(const char* filename) {
         for(int i = 0; i < rooms[i]->items.size(); i ++){
             rooms[i]->items[i] = find_item(items[i]->name);
         }
+        for(int i = 0; i < rooms[i]->containers.size(); i ++){
+            rooms[i]->containers[i] = find_container(items[i]->name);
+        }
+        for(int i = 0; i < rooms[i]->creatures.size(); i ++){
+            rooms[i]->creatures[i] = find_creature(items[i]->name);
+        }
     }
     
 }
@@ -126,9 +132,9 @@ int Zork::process_command(){
         if(curr_room->items.size() != 0){
             int i;
             for(i = 0; i < curr_room->items.size() - 1; i++){
-                cout << curr_room->items[i] << ", ";
+                cout << curr_room->items[i]->name << ", ";
             }
-            cout << curr_room->items[i] << endl;
+            cout << curr_room->items[i]->name << endl;
         }
     }else if (usr_input == "i"){
         if(inventory.size() != 0){
@@ -176,7 +182,29 @@ Item* Zork::find_item(string item) {
             return items[i];
         }
     }
-    cout << "ERROR: Could Not Find item" << endl;
+    cout << "ERROR: Could Not Find Item" << endl;
+    return NULL;
+}
+
+Creature* Zork::find_creature(string creature) {
+    // NOTE: Error if room is not in list (Not sure if it matters)
+    for (unsigned int i = 0; i < creatures.size(); i++) {
+        if (string(creatures[i]->name) == creature) {
+            return creatures[i];
+        }
+    }
+    cout << "ERROR: Could Not Find Creature" << endl;
+    return NULL;
+}
+
+Container* Zork::find_container(string container) {
+    // NOTE: Error if room is not in list (Not sure if it matters)
+    for (unsigned int i = 0; i < containers.size(); i++) {
+        if (string(containers[i]->name) == container) {
+            return containers[i];
+        }
+    }
+    cout << "ERROR: Could Not Find Creature" << endl;
     return NULL;
 }
 
