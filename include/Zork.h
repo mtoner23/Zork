@@ -32,6 +32,7 @@ public:
     int process_command();
     Room* find_room(string value);
     Item* find_item(string);
+    Item* search_inventory(string);
     Creature* find_creature(string);
     Container* find_container(string);
 private:

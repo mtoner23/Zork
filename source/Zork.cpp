@@ -178,7 +178,7 @@ int Zork::process_command(){
             cout << "There is no item \"" << item_name << "\" in this room" << endl;
         }
     }else if(usr_input.substr(0,4) == "drop"){
-        string item_name = usr_input.substr(5); // String starting after word take
+        string item_name = usr_input.substr(5); // String starting after word drop
         Item* item = NULL;
         for(int i = 0; i < inventory.size(); i ++){
             if(inventory[i]->name == item_name){
@@ -192,6 +192,20 @@ int Zork::process_command(){
             cout << item->name << " dropped." << endl;
         }else{
             cout << "There is no item \"" << item_name << "\" in your inventory" << endl;
+        }
+    }else if(usr_input.substr(0,4) == "read"){
+        string item_name = usr_input.substr(5); // String starting after word read
+        Item* item = NULL;
+        for(int i = 0; i < inventory.size(); i ++){
+            if(inventory[i]->name == item_name){
+                item = inventory[i];
+                break;
+            }
+        }
+        if(item != NULL){
+            cout << item->writing << endl;
+        }else{
+            cout << "Nothing Written." << endl;
         }
     }else{
         cout << "I do not recognize that command" << endl;
