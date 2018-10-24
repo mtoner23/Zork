@@ -73,12 +73,20 @@ Zork::Zork(const char* filename) {
             rooms[i]->west = find_room(rooms[i]->west->name);
         }
         for(int i = 0; i < rooms[i]->items.size(); i ++){
+            // Item Allocation
             rooms[i]->items[i] = find_item(items[i]->name);
         }
-        for(int i = 0; i < rooms[i]->containers.size(); i ++){
-            rooms[i]->containers[i] = find_container(items[i]->name);
+        for(int j = 0; j < rooms[i]->containers.size(); j++){
+            //Container Allocation
+            rooms[i]->containers[j] = find_container(rooms[i]->containers[j]->name);
+            cout << rooms[i]->containers[j]->name << endl;
+            for(int k = 0; k < rooms[i]->containers[j]->items.size(); k++){
+                //Container Items allocation
+                rooms[i]->containers[j]->items[k] = find_item(rooms[i]->containers[j]->items[k]->name);
+            }
         }
         for(int i = 0; i < rooms[i]->creatures.size(); i ++){
+            //Creature Allocation
             rooms[i]->creatures[i] = find_creature(items[i]->name);
         }
     }
