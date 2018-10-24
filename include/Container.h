@@ -9,6 +9,7 @@
 #include <map>
 #include <iterator>
 #include "../include/Trigger.h"
+#include "../include/Item.h"
 #include "../include/ZorkObject.h"
 
 using namespace std;
@@ -26,7 +27,7 @@ public:
 	string status;
 	string description;
 	vector <string> accepts;
-	vector <string> items;
+	vector <Item *> items;
 	vector <Trigger *> triggers;
 };
 

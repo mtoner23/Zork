@@ -8,7 +8,7 @@
 #include "../include/Container.h"
 #include "../include/Trigger.h"
 
-#define DEBUG_FLAG 0
+#define DEBUG_FLAG 1
 #if DEBUG_FLAG
 #	define DEBUG(...) printf(__VA_ARGS__)
 #else
@@ -26,7 +26,7 @@ void Container::print_contents(void) {
 	printf("Container Description: %s\n", this->description.c_str());
 
 	for (unsigned int i = 0; i < items.size(); i++) {
-		printf("Item: %s\n", items[i].c_str());
+		printf("Item: %s\n", items[i]->name.c_str());
 	}
 	for (unsigned int i = 0; i < accepts.size(); i++) {
 		printf("Container Accepts: %s\n", accepts[i].c_str());
@@ -57,7 +57,8 @@ Container::Container(xml_node <> * root) {
 			DEBUG("Container Description: %s\n", this->description.c_str());
 		}
 		else if (string(curr_node->name()) == string("item")) {
-			items.push_back(curr_node->value());
+            Item * temp = new Item(curr_node->value());
+			items.push_back(temp);
 			DEBUG("item: %s\n", curr_node->value());
 		}
 		else if (string(curr_node->name()) == string("accept")) {
