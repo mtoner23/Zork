@@ -18,6 +18,7 @@ class Container: public ZorkObject {
 public:
 	// Constructors & Deconstructors
 	Container(xml_node <> * root);
+    Container(string name);
 	~Container();
 	void print_contents(void);
 	// Member variables

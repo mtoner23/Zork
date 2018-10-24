@@ -8,6 +8,9 @@
 #include <vector>
 #include <map>
 #include <iterator>
+#include "../include/Container.h"
+#include "../include/Item.h"
+#include "../include/Creature.h"
 #include "../include/Trigger.h"
 #include "../include/ZorkObject.h"
 
@@ -18,6 +21,7 @@ class Room: public ZorkObject {
 public:
 	// Constructors & Deconstructors
 	Room(xml_node <> * root);
+    Room(string name);
 	~Room();
 	void print_contents(void);
 	// Member variables
@@ -25,13 +29,13 @@ public:
 	string status = "";
 	string type = "";
 	string description = "";
-	string north = "";
-	string south = "";
-	string west = "";
-	string east = "";
-	vector <string> containers;
-	vector <string> items;
-	vector <string> creatures;
+	Room * north = NULL;
+	Room * south = NULL;
+    Room * west = NULL;
+    Room * east = NULL;
+	vector <Container *> containers;
+	vector <Item *> items;
+	vector <Creature *> creatures;
 	vector <Trigger *> triggers;
 };
 

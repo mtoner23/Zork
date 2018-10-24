@@ -34,6 +34,10 @@ void Item::print_contents(void) {
 
 }
 
+Item::Item(string name){
+    this->name = name;
+}
+
 Item::Item(xml_node <> * root) {
 
 	for (xml_node<> * curr_node = root->first_node(); curr_node; curr_node = curr_node->next_sibling()) {

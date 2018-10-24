@@ -59,6 +59,24 @@ Zork::Zork(const char* filename) {
 		}
 	}
     curr_room = find_room("Entrance");
+    for(int i = 0; i < rooms.size(); i++){
+        if(rooms[i]->north != NULL){
+            rooms[i]->north = find_room(rooms[i]->north->name);
+        }
+        if(rooms[i]->south != NULL){
+            rooms[i]->south = find_room(rooms[i]->south->name);
+        }
+        if(rooms[i]->east != NULL){
+            rooms[i]->east = find_room(rooms[i]->east->name);
+        }
+        if(rooms[i]->west != NULL){
+            rooms[i]->west = find_room(rooms[i]->west->name);
+        }
+        for(int i = 0; i < rooms[i]->items.size(); i ++){
+            rooms[i]->items[i] = find_item(items[i]->name);
+        }
+    }
+    
 }
 
 void Zork::play(void) {
@@ -76,29 +94,29 @@ int Zork::process_command(){
         cout << "Goodbye!!" << endl;
         return 1;
     }else if (usr_input == "n"){
-        if(curr_room->north != ""){
-            curr_room = find_room(curr_room->north);
+        if(curr_room->north != NULL){
+            curr_room = find_room(curr_room->north->name);
             cout << curr_room->description << endl;
         }else{
             cout << "You cannot go north" << endl;
         }
     }else if (usr_input == "s"){
-        if(curr_room->south != ""){
-            curr_room = find_room(curr_room->south);
+        if(curr_room->south != NULL){
+            curr_room = find_room(curr_room->south->name);
             cout << curr_room->description << endl;
         }else{
             cout << "You cannot go south" << endl;
         }
     }else if (usr_input == "e"){
-        if(curr_room->east != ""){
-            curr_room = find_room(curr_room->east);
+        if(curr_room->east != NULL){
+            curr_room = find_room(curr_room->east->name);
             cout << curr_room->description << endl;
         }else{
             cout << "You cannot go east" << endl;
         }
     }else if (usr_input == "w"){
-        if(curr_room->west != ""){
-            curr_room = find_room(curr_room->west);
+        if(curr_room->west != NULL){
+            curr_room = find_room(curr_room->west->name);
             cout << curr_room->description << endl;
         }else{
             cout << "You cannot go west" << endl;
@@ -130,20 +148,20 @@ int Zork::process_command(){
             cout << "This isn't the exit" << endl;
         }
     }else if(usr_input.substr(0,4) == "take"){
-        string item = usr_input.substr(5); // String starting after word take
-        bool found = 0;
+        string item_name = usr_input.substr(5); // String starting after word take
+        Item* item = NULL;
         for(int i = 0; i < curr_room->items.size(); i ++){
-            if(curr_room->items[i] == item){
+            if(curr_room->items[i]->name == item_name){
+                item = curr_room->items[i];
                 curr_room->items.erase(curr_room->items.begin()+i);
-                found = 1;
                 break;
             }
         }
-        if(found){
-            inventory.push_back(find_item(item));
+        if(item != NULL){
+            inventory.push_back(item);
             cout << "Taken." << endl;
         }else{
-            cout << "There is no item \"" << item << "\" in this room";
+            cout << "There is no item \"" << item << "\" in this room" << endl;
         }
     }else{
         cout << "I do not recognize that command" << endl;

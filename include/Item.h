@@ -23,6 +23,7 @@ class Item: public ZorkObject {
 public:
 	// Constructors & Deconstructors
 	Item(xml_node <> * root);
+    Item(string name);
 	~Item();
 	void print_contents(void);
 	// Member variables

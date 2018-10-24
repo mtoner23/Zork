@@ -8,8 +8,8 @@
 #include "../include/room.h"
 #include "../include/Trigger.h"
 
-#define DEBUG_FLAG 0
-#if DEBUG_FLAG
+//#define DEBUG_FLAG
+#ifdef DEBUG_FLAG
 #	define DEBUG(...) printf(__VA_ARGS__)
 #else
 #	define DEBUG(x,...)
@@ -25,24 +25,28 @@ void Room::print_contents(void) {
 	printf("Room Status: %s\n", this->status.c_str());
 	printf("Room Description: %s\n", this->description.c_str());
 	printf("Room Type: %s\n", this->type.c_str());
-	printf("NORTH is %s\n", this->north.c_str());
-	printf("SOUTH is %s\n", this->south.c_str());
-	printf("EAST is %s\n", this->east.c_str());
-	printf("WEST is %s\n", this->west.c_str());
+	printf("NORTH is %s\n", this->north->name.c_str());
+	printf("SOUTH is %s\n", this->south->name.c_str());
+	printf("EAST is %s\n", this->east->name.c_str());
+	printf("WEST is %s\n", this->west->name.c_str());
 	
 	for (unsigned int i = 0; i < items.size(); i++) {
-		printf("Item: %s\n", items[i].c_str());
+		printf("Item: %s\n", items[i]->name.c_str());
 	}
 	for (unsigned int i = 0; i < containers.size(); i++) {
-		printf("Container: %s\n", containers[i].c_str());
+		printf("Container: %s\n", containers[i]->name.c_str());
 	}
 	for (unsigned int i = 0; i < creatures.size(); i++) {
-		printf("Creature: %s\n", creatures[i].c_str());
+		printf("Creature: %s\n", creatures[i]->name.c_str());
 	}
 	for (unsigned int i = 0; i < triggers.size(); i++) {
 		triggers[i]->print_contents();
 	}
 	
+}
+
+Room::Room(string name){
+    this->name = name;
 }
 
 Room::Room(xml_node <> * root) {
@@ -65,15 +69,18 @@ Room::Room(xml_node <> * root) {
 			DEBUG("Room Type: %s\n", this->type.c_str());
 		}
 		else if (string(curr_node->name()) == string("container")) {
-			containers.push_back(curr_node->value());
+            Container * temp = new Container(curr_node->value());
+			containers.push_back(temp);
 			DEBUG("container: %s\n", curr_node->value());
 		}
 		else if (string(curr_node->name()) == string("item")) {
-			items.push_back(curr_node->value());
+            Item * temp = new Item(curr_node->value());
+			items.push_back(temp);
 			DEBUG("item: %s\n", curr_node->value());
 		}
 		else if (string(curr_node->name()) == string("creature")) {
-			creatures.push_back(curr_node->value());
+            Creature * temp = new Creature(curr_node->value());
+            creatures.push_back(temp);
 			DEBUG("Creature: %s\n", curr_node->value());
 		}
 		else if (string(curr_node->name()) == string("trigger")) {
@@ -82,20 +89,20 @@ Room::Room(xml_node <> * root) {
 		else if (string(curr_node->name()) == string("border")) {
 
 			if (string(curr_node->first_node("direction")->value()) == string("north")) {
-				this->north = string(curr_node->first_node("name")->value());
-				DEBUG("NORTH is %s\n", this->north.c_str());
+				this->north = new Room(string(curr_node->first_node("name")->value()));
+				DEBUG("NORTH is %s\n", this->north->name.c_str());
 			}
 			if (string(curr_node->first_node("direction")->value()) == string("south")) {
-				this->south = string(curr_node->first_node("name")->value());
-				DEBUG("SOUTH is %s\n", this->south.c_str());
+				this->south = new Room(string(curr_node->first_node("name")->value()));
+				DEBUG("SOUTH is %s\n", this->south->name.c_str());
 			}
 			if (string(curr_node->first_node("direction")->value()) == string("west")) {
-				this->west = string(curr_node->first_node("name")->value());
-				DEBUG("WEST is %s\n", this->west.c_str());
+				this->west = new Room(string(curr_node->first_node("name")->value()));
+				DEBUG("WEST is %s\n", this->west->name.c_str());
 			}
 			if (string(curr_node->first_node("direction")->value()) == string("east")) {
-				this->east = string(curr_node->first_node("name")->value());
-				DEBUG("EAST is %s\n", this->east.c_str());
+				this->east = new Room(string(curr_node->first_node("name")->value()));
+				DEBUG("EAST is %s\n", this->east->name.c_str());
 			}
 		}
 

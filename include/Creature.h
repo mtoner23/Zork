@@ -29,6 +29,7 @@ class Creature: public ZorkObject{
 public:
 	// Constructors & Deconstructors
 	Creature(xml_node <> * root);
+    Creature(string name);
 	~Creature();
 	void print_contents(void);
 	// Member variables
