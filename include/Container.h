@@ -22,6 +22,7 @@ public:
     Container(string name);
 	~Container();
 	void print_contents(void);
+	void update_status(string status);
 	// Member variables
 	string name;
 	string status;

@@ -234,6 +234,36 @@ int Zork::process_command(){
         }
 
     
+    }else if(usr_input.substr(0,4) == "open"){
+        string container_name = usr_input.substr(5);
+        Container* container = NULL;
+        for(int i = 0; i < curr_room->containers.size(); i++){
+            if(curr_room->containers[i]->name == container_name){
+                container = curr_room->containers[i];
+                break;
+            }
+        }
+        if(container == NULL){
+            cout << "Could not find " << container_name << endl;
+        }else{
+            if(container->accepts.size() == 0){
+                container->update_status("open");
+                if(container->items.size() == 0){
+                    cout << container_name << " is empty" << endl;
+                }else if(container->items.size() == 1){
+                    cout << container_name << " contains " << container->items[0]->name << endl;
+                }else{
+                    cout << container_name << " contains ";
+                    int i;
+                    for(i = 0; i < container->items.size() - 1; i++){
+                        cout << container->items[i]->name << ", ";
+                    }
+                    cout << container->items[i]->name << endl;
+                }
+            }else{
+                cout << "Could not open " << container_name << endl;
+            }
+        }
     }else{
         cout << "I do not recognize that command" << endl;
     }
