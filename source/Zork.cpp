@@ -170,6 +170,19 @@ int Zork::process_command(){
                 break;
             }
         }
+        for(int i = 0; i < curr_room->containers.size() && item == NULL; i++){
+            Container* container = curr_room->containers[i];
+            for(int j = 0; j < container->items.size(); j++){
+                if(container->items[j]->name == item_name && container->status == "open"){
+                    item = container->items[j];
+                    container->items.erase(container->items.begin()+j);
+                    break;
+                }
+            }
+            if(item != NULL){
+                break;
+            }
+        }
         if(item != NULL){
             inventory.push_back(item);
             cout << "Item \"" << item_name << "\" added to inventory"<< endl;

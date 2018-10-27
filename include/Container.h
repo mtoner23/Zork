@@ -24,9 +24,9 @@ public:
 	void print_contents(void);
 	void update_status(string status);
 	// Member variables
-	string name;
-	string status;
-	string description;
+	string name = "";
+	string status = "";
+	string description = "";
 	vector <string> accepts;
 	vector <Item *> items;
 	vector <Trigger *> triggers;

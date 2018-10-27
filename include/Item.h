@@ -28,10 +28,10 @@ public:
 	void print_contents(void);
 	void update_status(string status);
 	// Member variables
-	string name;
-	string status;
-	string description;
-	string writing;
+	string name = "";
+	string status = "";
+	string description = "";
+	string writing = "";
 	turn_on turnon;
 	vector <Trigger *> triggers;
 };
