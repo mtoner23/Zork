@@ -12,6 +12,7 @@
 #include "../include/Creature.h"
 #include "../include/Zork.h"
 #include "../include/ZorkObject.h"
+#include <sstream>
 
 using namespace std;
 using namespace rapidxml;
@@ -260,7 +261,9 @@ int Zork::process_command(){
             cout << "Could not find " << container_name << endl;
         }else{
             if(container->accepts.size() == 0){
-                container->update_status("open");
+                if(container->status == ""){
+                    container->update_status("open");
+                }
                 if(container->items.size() == 0){
                     cout << container_name << " is empty" << endl;
                 }else if(container->items.size() == 1){
@@ -276,6 +279,65 @@ int Zork::process_command(){
             }else{
                 cout << "Could not open " << container_name << endl;
             }
+        }
+    }else if(usr_input.substr(0,3) == "put"){
+        stringstream ss(usr_input);
+        istream_iterator<string> begin(ss);
+        istream_iterator<string> end;
+        vector<string> results(begin, end);
+        //string item_name = usr_input.substr(4,usr_input.size() - (7));
+        string item_name = results[1];
+        //string container_name = usr_input.substr(usr_input.find("in") + string("in ").size());
+        string container_name = results[3];
+        Item* item = NULL;
+        Container* container = NULL;
+        int item_placed = 0;
+
+        for(int i = 0; i < curr_room->containers.size(); i++){
+            if(curr_room->containers[i]-> name == container_name){
+                container = curr_room->containers[i];
+                break;
+            }
+        }
+        if( container == NULL){
+            cout << container_name << " is not in " << curr_room->name << endl;
+            return 0;
+        }
+        for(int i = 0; i < inventory.size(); i++){
+            if(inventory[i]-> name == item_name){
+                item = inventory[i];
+                inventory.erase(inventory.begin()+i);
+                break;
+            }
+        }
+
+        if( item == NULL){
+            cout << item_name << " is not in inventory" << endl;
+            return 0;
+        }
+        if( container->accepts.size() == 0 && container->status == "open"){
+            container->items.push_back(item);
+            cout << item_name << " placed in " << container_name << endl;
+            item_placed = 1;
+        }
+        else if(container->accepts.size() == 0 && container->status != "open"){
+            cout << item_name << " could not be placed in " << container_name << endl;
+        }
+        else if(container->accepts.size() != 0){
+            for(int i = 0; i < container->accepts.size(); i++){
+                if(container->accepts[i] == item_name){
+                    container->accepts.erase(container->accepts.begin()+i);
+                    cout << item_name << " placed in " << container_name << endl;
+                    item_placed = 1;
+                    break;
+                }
+            }
+            if( !item_placed ){
+                cout << "Could not put " << item_name << " in " << container_name << endl;
+            }
+        }
+        if( !item_placed ){
+            inventory.push_back(item);
         }
     }else{
         cout << "I do not recognize that command" << endl;
