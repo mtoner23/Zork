@@ -202,10 +202,38 @@ int Zork::process_command(){
             }
         }
         if(item != NULL){
+            /***************************************************************
+             What if there is no writing? Should a different message be 
+             displayed?
+            ***************************************************************/
             cout << item->writing << endl;
         }else{
             cout << "Nothing Written." << endl;
         }
+    }else if(usr_input.substr(0,7) == "turn on"){
+        string item_name = usr_input.substr(8);
+        Item* item = NULL;
+        for(int i = 0; i < inventory.size(); i ++){
+            if(inventory[i]->name == item_name){
+                item = inventory[i];
+                break;
+            }
+        }
+        if(item != NULL){
+            if(item->turnon.action == ""){
+                cout << "Nothing happened" << endl;
+            }
+            else{
+                string update_text = item->turnon.action.substr(item->turnon.action.rfind("to")+ string("to ").size() );
+                item->update_status(update_text);
+                //cout << "Updated " << item->name << " to " << item->status << endl;
+                cout << item->turnon.print << endl;
+            }
+        }else{
+            cout << item_name << " is not in inventory" << endl; 
+        }
+
+    
     }else{
         cout << "I do not recognize that command" << endl;
     }

@@ -34,6 +34,10 @@ void Item::print_contents(void) {
 
 }
 
+void Item::update_status(string status){
+	this->status = status;
+}
+
 Item::Item(string name){
     this->name = name;
 }
