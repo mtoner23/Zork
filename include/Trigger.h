@@ -26,7 +26,8 @@ public:
 	void print_contents(void);
 	string type = "";
 	string command = "";
-	trigger_condition condition;
+    trigger_condition condition;
+    //vector <trigger_condition *> condition;
 	string print = "";
 	string action = "";
 };

@@ -30,6 +30,7 @@ public:
 	vector<Creature*> creatures;
 	void play(void);
     int process_command();
+    void check_override();
     Room* find_room(string value);
     Item* find_item(string);
     Item* search_inventory(string);

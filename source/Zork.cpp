@@ -95,11 +95,26 @@ Zork::Zork(const char* filename) {
 void Zork::play(void) {
 	cout << curr_room->description << endl;
     int out = 0;
+    int over = 0;
 	while (out == 0) {
 		getline(cin, this->usr_input);
-        out = process_command();
+        over = check_override();
+        if(!over){
+            process_command();
+        }
+        check_result();
 	}
     return;
+}
+
+void Zork::check_override(){
+    trigger_condition condition;
+    for(int i = 0; i < curr_room->triggers.size(); i++){
+        condition = curr_room->triggers[i]->condition;
+        if(){
+            
+        }
+    }
 }
 
 int Zork::process_command(){
