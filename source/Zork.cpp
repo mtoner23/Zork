@@ -231,13 +231,13 @@ int Zork::process_command(){
             }
         }
         if(item != NULL){
-            /***************************************************************
-             What if there is no writing? Should a different message be 
-             displayed?
-            ***************************************************************/
-            cout << item->writing << endl;
+            if(item->writing != ""){
+                cout << item->writing << endl;
+            }else{
+                cout << "Nothing Written." << endl;
+            }
         }else{
-            cout << "Nothing Written." << endl;
+            cout << "No item " << item_name << " in inventory." << endl;
         }
     }else if(usr_input.substr(0,7) == "turn on"){
         string item_name = usr_input.substr(8);
