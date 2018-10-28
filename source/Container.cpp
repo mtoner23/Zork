@@ -37,6 +37,10 @@ void Container::print_contents(void) {
 
 }
 
+void Container::update_status(string status){
+	this->status = status;
+}
+
 Container::Container(string name){
     this->name = name;
 }

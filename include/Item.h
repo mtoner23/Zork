@@ -15,8 +15,8 @@ using namespace std;
 using namespace rapidxml;
 
 struct turn_on {
-	string print;
-	string action;
+	string print = "";
+	string action = "";
 };
 
 class Item: public ZorkObject {
@@ -26,11 +26,12 @@ public:
     Item(string name);
 	~Item();
 	void print_contents(void);
+	void update_status(string status);
 	// Member variables
-	string name;
-	string status;
-	string description;
-	string writing;
+	string name = "";
+	string status = "";
+	string description = "";
+	string writing = "";
 	turn_on turnon;
 	vector <Trigger *> triggers;
 };
