@@ -9,7 +9,6 @@
 #include <map>
 #include <iterator>
 #include "../include/Trigger.h"
-#include "../include/ZorkObject.h"
 
 using namespace std;
 using namespace rapidxml;
@@ -21,11 +20,11 @@ struct attack_condition {
 
 struct Attack {
 	attack_condition condition;
-	string print = "";
+	string print = ""; //TODO maybe multiple prints
 	vector <string> actions;
 };
 
-class Creature: public ZorkObject{
+class Creature{
 public:
 	// Constructors & Deconstructors
 	Creature(xml_node <> * root);
@@ -39,6 +38,7 @@ public:
 	vector <string> vulnerabilities;
 	Attack attack;
 	vector <Trigger *> triggers;
+    
 };
 
 #endif

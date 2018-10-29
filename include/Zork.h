@@ -9,10 +9,10 @@
 #include <string>
 #include <stdio.h>
 #include <fstream>
-#include "../include/room.h"
 #include "../include/Item.h"
 #include "../include/Container.h"
 #include "../include/Creature.h"
+#include "../include/room.h"
 
 using namespace std;
 using namespace rapidxml;
@@ -21,7 +21,6 @@ class Zork {
 public:
 	Zork(const char* filename);
 	~Zork();
-	string usr_input = "";
     Room * curr_room;
 	vector<Item*> inventory;
 	vector<Room*> rooms;
@@ -29,7 +28,7 @@ public:
 	vector<Container*> containers;
 	vector<Creature*> creatures;
 	void play(void);
-    int process_command();
+    int process_command(string);
     void check_override();
     Room* find_room(string value);
     Item* find_item(string);

@@ -45,7 +45,6 @@ Creature::Creature(string name){
 }
 
 Creature::Creature(xml_node <> * root) {
-
 	for (xml_node<> * curr_node = root->first_node(); curr_node; curr_node = curr_node->next_sibling()) {
 		if (string(curr_node->name()) == string("name")) {
 			this->name = curr_node->value();

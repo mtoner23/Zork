@@ -6,12 +6,12 @@
 #include <string>
 #include <stdio.h>
 #include <fstream>
-#include "../include/room.h"
 #include "../include/Item.h"
 #include "../include/Container.h"
 #include "../include/Creature.h"
 #include "../include/Zork.h"
 #include "../include/ZorkObject.h"
+#include "../include/room.h"
 #include <sstream>
 
 using namespace std;
@@ -29,7 +29,7 @@ Zork::Zork(const char* filename) {
 
 	if (theFile.fail()) {
 		cout << "FILE: " << filename << " failed to open." << endl;
-		// Possible to indicate failure???
+        //TODO fix file handling
 	}
 	vector<char> buffer((istreambuf_iterator<char>(theFile)), istreambuf_iterator<char>());
 	buffer.push_back('\0');
@@ -73,9 +73,10 @@ Zork::Zork(const char* filename) {
         if(rooms[i]->west != NULL){
             rooms[i]->west = find_room(rooms[i]->west->name);
         }
-        for(int i = 0; i < rooms[i]->items.size(); i ++){
+        for(int j = 0; j < rooms[i]->items.size(); j++){
             // Item Allocation
-            rooms[i]->items[i] = find_item(items[i]->name);
+            //cout << "Room: " << rooms[i]->name << "   Item: " << rooms[i]->items[j]->name << endl;
+            rooms[i]->items[j] = find_item(rooms[i]->items[j]->name);
         }
         for(int j = 0; j < rooms[i]->containers.size(); j++){
             //Container Allocation
@@ -85,9 +86,9 @@ Zork::Zork(const char* filename) {
                 rooms[i]->containers[j]->items[k] = find_item(rooms[i]->containers[j]->items[k]->name);
             }
         }
-        for(int i = 0; i < rooms[i]->creatures.size(); i ++){
+        for(int j = 0; j < rooms[i]->creatures.size(); j++){
             //Creature Allocation
-            rooms[i]->creatures[i] = find_creature(items[i]->name);
+            rooms[i]->creatures[j] = find_creature(rooms[i]->creatures[j]->name);
         }
     }
     
@@ -97,13 +98,14 @@ void Zork::play(void) {
 	cout << curr_room->description << endl;
     int out = 0;
     int over = 0;
+    string usr_input;
 	while (out == 0) {
-		getline(cin, this->usr_input);
-        over = check_override();
+		getline(cin, usr_input);
+        //over = check_override();
         if(!over){
-            process_command();
+            process_command(usr_input);
         }
-        check_result();
+        //check_result();
 	}
     return;
 }
@@ -112,13 +114,11 @@ void Zork::check_override(){
     trigger_condition condition;
     for(int i = 0; i < curr_room->triggers.size(); i++){
         condition = curr_room->triggers[i]->condition;
-        if(){
-            
-        }
+        //TODO:
     }
 }
 
-int Zork::process_command(){
+int Zork::process_command(string usr_input){
     if (usr_input == "quit") {
         cout << "Goodbye!!" << endl;
         return 1;
@@ -195,9 +195,6 @@ int Zork::process_command(){
                     break;
                 }
             }
-            if(item != NULL){
-                break;
-            }
         }
         if(item != NULL){
             inventory.push_back(item);
@@ -249,8 +246,9 @@ int Zork::process_command(){
             }
         }
         if(item != NULL){
+            cout << "You activate the " << item_name << "." << endl;
             if(item->turnon.action == ""){
-                cout << "Nothing happened" << endl;
+                cout << "Nothing happened." << endl;
             }
             else{
                 string update_text = item->turnon.action.substr(item->turnon.action.rfind("to")+ string("to ").size() );
@@ -259,7 +257,7 @@ int Zork::process_command(){
                 cout << item->turnon.print << endl;
             }
         }else{
-            cout << item_name << " is not in inventory" << endl; 
+            cout << item_name << " is not in inventory." << endl;
         }
 
     
@@ -300,9 +298,7 @@ int Zork::process_command(){
         istream_iterator<string> begin(ss);
         istream_iterator<string> end;
         vector<string> results(begin, end);
-        //string item_name = usr_input.substr(4,usr_input.size() - (7));
         string item_name = results[1];
-        //string container_name = usr_input.substr(usr_input.find("in") + string("in ").size());
         string container_name = results[3];
         Item* item = NULL;
         Container* container = NULL;
@@ -354,6 +350,67 @@ int Zork::process_command(){
         if( !item_placed ){
             inventory.push_back(item);
         }
+    }
+    else if(usr_input.substr(0,6) == "attack"){
+        int idx = (int)usr_input.find(" with ");
+        
+        string creature_name = usr_input.substr(7,idx - 7);
+        string item_name = usr_input.substr(idx+6);
+        
+        Creature * creature = NULL;
+        Item * item = NULL;
+        
+        
+        for (int i = 0; i < curr_room->creatures.size(); i++) {
+            if(creature_name == curr_room->creatures[i]->name){
+                creature = curr_room->creatures[i];
+                break;
+            }
+        }
+        
+        if(creature == NULL){
+            cout << "There is no creature " << creature_name << " in the room." << endl;
+            return 0;
+        }
+        
+        for (int i = 0; i < inventory.size(); i++) {
+            if(item_name == inventory[i]->name){
+                item = inventory[i];
+                break;
+            }
+        }
+        
+        if(item == NULL){
+            cout << "There is no item " << item_name << " in your inventory." << endl;
+            return 0;
+        }
+        
+        cout << "You attack " << creature_name << " with " << item_name << "." << endl;
+        
+        int success = 0;
+        
+        for (int i = 0; i < creature->vulnerabilities.size() && success == 0; i++) {
+            if(item_name == creature->vulnerabilities[i]){
+                //cout << "Vulnerable" << endl;
+                for ( int j = 0; j < inventory.size() && success == 0; j ++){
+                    //cout << "attack object status: " << creature->attack.condition.status << "our status: " << inventory[j]->status << endl;
+                    if((creature->attack.condition.object == "" || creature->attack.condition.object ==  inventory[j]->name) && (creature->attack.condition.status == inventory[j]->status || creature->attack.condition.status == "")){
+                        success = 1;
+                        if(creature->attack.print != ""){
+                            cout << creature->attack.print << endl;
+                        }
+                    }
+                }
+            }
+        }
+        
+        if(success){
+            for(int i = 0; i < creature->attack.actions.size(); i++){
+                //cout << "Action: " << creature->attack.actions[i] << endl;
+                process_command(creature->attack.actions[i]);
+            }
+        }
+        
     }else{
         cout << "I do not recognize that command" << endl;
     }
