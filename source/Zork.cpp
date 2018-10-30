@@ -121,9 +121,9 @@ void Zork::check_override(string usr_input){
                 if(trig->print != ""){
                     cout << trig->print << endl;
                 }
-//                for(int j = 0; j < creature->attack.actions.size(); j++){
+//                for(int j = 0; j < trig->actions.size(); j++){
 //                    //cout << "Action: " << creature->attack.actions[i] << endl;
-//                    process_command(creature->attack.actions[j],1);
+//                    process_command(trig->actions[j],1);
 //                }
             }
         }
