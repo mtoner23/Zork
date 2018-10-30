@@ -1,0 +1,3 @@
+1. You cannot add/remove a container object
+2. All item/creature/container names must be unique
+3. 
