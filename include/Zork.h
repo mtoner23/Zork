@@ -28,7 +28,7 @@ public:
 	vector<Container*> containers;
 	vector<Creature*> creatures;
 	void play(void);
-    int process_command(string);
+    int process_command(string,int);
     void check_override();
     Room* find_room(string value);
     Item* find_item(string);

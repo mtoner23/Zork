@@ -102,8 +102,9 @@ void Zork::play(void) {
 	while (out == 0) {
 		getline(cin, usr_input);
         //over = check_override();
+        //cout << usr_input << endl;
         if(!over){
-            process_command(usr_input);
+            out = process_command(usr_input,0);
         }
         //check_result();
 	}
@@ -118,7 +119,8 @@ void Zork::check_override(){
     }
 }
 
-int Zork::process_command(string usr_input){
+int Zork::process_command(string usr_input, int dev_mode){
+    //Dev Mode determines who is calling this command, the player or another object, in which case we can use special commands, add update delete and game over
     if (usr_input == "quit") {
         cout << "Goodbye!!" << endl;
         return 1;
@@ -169,15 +171,18 @@ int Zork::process_command(string usr_input){
         }else{
             cout << "Inventory: Empty" << endl;
         }
-    }else if(usr_input == "open exit" || usr_input == "exit"){
-        if(curr_room->type == "exit"){
-            cout << "Game Over" << endl;
+    }else if(usr_input == "open exit" || usr_input == "exit" || (usr_input == "Game Over" && dev_mode)){
+        if(dev_mode == 1){
+            cout << "Victory!" << endl;
+            return 1;
+        }else if(curr_room->type == "exit"){
+            cout << "Game Over" << endl; //TODO: victory or Game over??
             return 1;
         }else{
             cout << "This isn't the exit" << endl;
         }
     }else if(usr_input.substr(0,4) == "take"){
-        string item_name = usr_input.substr(5); // String starting after word take
+        string item_name = usr_input.substr(5); //String starting after word take
         Item* item = NULL;
         for(int i = 0; i < curr_room->items.size(); i ++){
             if(curr_room->items[i]->name == item_name){
@@ -407,7 +412,59 @@ int Zork::process_command(string usr_input){
         if(success){
             for(int i = 0; i < creature->attack.actions.size(); i++){
                 //cout << "Action: " << creature->attack.actions[i] << endl;
-                process_command(creature->attack.actions[i]);
+                process_command(creature->attack.actions[i],1);
+            }
+        }
+        
+    } else if(usr_input.substr(0,3) == "Add" && dev_mode){
+        int idx = (int)usr_input.find(" to ");
+        
+        string object_name = usr_input.substr(4,idx - 4);
+        string dest_name = usr_input.substr(idx+4);
+        
+        Item * item = find_item(object_name);
+        Creature * creature = find_creature(object_name);
+        
+        Room * room = find_room(dest_name);
+        Container * container = find_container(dest_name);
+        
+        if(item != NULL){
+            if(room != NULL){
+                room->items.push_back(item);
+            }else{
+                container->items.push_back(item);
+            }
+        }else{
+            if(room != NULL){
+                room->creatures.push_back(creature);
+            }
+        }
+        
+    } else if(usr_input.substr(0,6) == "Delete"){
+        // int idx = (int)usr_input.find(" to ");
+        
+        string object_name = usr_input.substr(7);
+        
+        int found = 0;
+        
+        Item * item = find_item(object_name);
+        Creature * creature = find_creature(object_name);
+        
+        for( int i = 0; i < rooms.size() && !found; i++){
+            if(item != NULL){
+                for(int j = 0; j < rooms[i]->items.size() && !found; j++){
+                    if(rooms[i]->items[j] == item){
+                        rooms[i]->items.erase(rooms[i]->items.begin() + j);
+                        found = 1;
+                    }
+                }
+            } else {
+                for(int j = 0; j < rooms[i]->creatures.size() && !found; j++){
+                    if(rooms[i]->creatures[j] == creature){
+                        rooms[i]->creatures.erase(rooms[i]->creatures.begin() + j);
+                        found = 1;
+                    }
+                }
             }
         }
         
@@ -424,7 +481,6 @@ Item* Zork::find_item(string item) {
             return items[i];
         }
     }
-    cout << "ERROR: Could Not Find Item" << endl;
     return NULL;
 }
 
@@ -435,7 +491,6 @@ Creature* Zork::find_creature(string creature) {
             return creatures[i];
         }
     }
-    cout << "ERROR: Could Not Find Creature" << endl;
     return NULL;
 }
 
@@ -446,7 +501,6 @@ Container* Zork::find_container(string container) {
             return containers[i];
         }
     }
-    cout << "ERROR: Could Not Find Creature" << endl;
     return NULL;
 }
 
@@ -457,6 +511,5 @@ Room* Zork::find_room(string value) {
 			return rooms[i];
 		}
 	}
-    cout << "ERROR: Could Not Find room" << endl;
 	return NULL;
 }
