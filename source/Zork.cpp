@@ -111,11 +111,23 @@ void Zork::play(void) {
     return;
 }
 
-void Zork::check_override(){
-    trigger_condition condition;
+void Zork::check_override(string usr_input){
+    Trigger * trig;
     for(int i = 0; i < curr_room->triggers.size(); i++){
-        condition = curr_room->triggers[i]->condition;
-        //TODO:
+        trig = curr_room->triggers[i];
+        if(trig->command == usr_input || trig->command == ""){
+            Item * trig_obj = find_item(trig->condition.object);
+            if(trig_obj->status == trig->condition.status){
+                if(trig->print != ""){
+                    cout << trig->print << endl;
+                }
+//                for(int j = 0; j < creature->attack.actions.size(); j++){
+//                    //cout << "Action: " << creature->attack.actions[i] << endl;
+//                    process_command(creature->attack.actions[j],1);
+//                }
+            }
+        }
+        
     }
 }
 
@@ -308,7 +320,7 @@ int Zork::process_command(string usr_input, int dev_mode){
         Item* item = NULL;
         Container* container = NULL;
         int item_placed = 0;
-
+        
         for(int i = 0; i < curr_room->containers.size(); i++){
             if(curr_room->containers[i]-> name == container_name){
                 container = curr_room->containers[i];
