@@ -217,7 +217,7 @@ int Zork::check_override(string usr_input){
                 for(int k = 0; k < trig->actions.size(); k++){
                     process_command(trig->actions[k],1);
                 }
-                if(trig->type == "single"){
+                if(trig->type != "permanent"){
                     curr_room->triggers.erase(curr_room->triggers.begin()+i);
                 }
                 return 1;
@@ -325,7 +325,7 @@ int Zork::check_override(string usr_input){
                     for(int k = 0; k < trig->actions.size(); k++){
                         process_command(trig->actions[k],1);
                     }
-                    if(trig->type == "single"){
+                    if(trig->type != "permanent"){
                         //cout << "i: " << i << endl;
                         curr_room->creatures[l]->triggers.erase(curr_room->creatures[l]->triggers.begin()+i);
                         //cout << "number of " << creatures[l]->name << " triggers: " << curr_room->creatures[l]->triggers.size() << endl;
@@ -436,16 +436,14 @@ int Zork::check_override(string usr_input){
                     for(int k = 0; k < trig->actions.size(); k++){
                         process_command(trig->actions[k],1);
                     }
-                    if(trig->type == "single"){
+                    if(trig->type != "permanent"){
                         //cout << "i: " << i << endl;
                         curr_room->containers[l]->triggers.erase(curr_room->containers[l]->triggers.begin()+i);
                         //cout << "number of " << creatures[l]->name << " triggers: " << curr_room->creatures[l]->triggers.size() << endl;
                     }
                     return 1;
                 }
-
             }
-            
         }
     }
     return 0;
