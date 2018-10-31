@@ -133,14 +133,34 @@ int Zork::check_override(string usr_input){
             for(int j = 0; j < num_conditions; j++){
                 if(find_item(trig->conditions[j]->object)){
                     Item* trig_obj = find_item(trig->conditions[j]->object);
-                    if(trig_obj->status == trig->conditions[j]->status){
+                    if((trig_obj->status == trig->conditions[j]->status) && trig->conditions[j]->has == ""){
                         num_conditions_passed++;
+                    }
+                    else if(trig->conditions[j]->has != ""){
+                        if(trig->conditions[j]->owner == "inventory"){
+                            if(find_item_in_inventory(trig_obj->name) != NULL && trig->conditions[j]->has == "yes"){
+                                num_conditions_passed++;
+                            }
+                            else if(find_item_in_inventory(trig_obj->name) == NULL && trig->conditions[j]->has == "no"){
+                                num_conditions_passed++;
+                            }
+                        }
                     }
                 }
                 else if(find_container(trig->conditions[j]->object)){
                     Container * trig_obj = find_container(trig->conditions[j]->object);
                     if(trig_obj->status == trig->conditions[j]->status){
                         num_conditions_passed++;
+                    }
+                    else if(trig->conditions[j]->has != ""){
+                        if(trig->conditions[j]->owner == "inventory"){
+                            if(find_item_in_inventory(trig_obj->name) != NULL && trig->conditions[j]->has == "yes"){
+                                num_conditions_passed++;
+                            }
+                            else if(find_item_in_inventory(trig_obj->name) == NULL && trig->conditions[j]->has == "no"){
+                                num_conditions_passed++;
+                            }
+                        }
                     }
                 }
 
@@ -161,53 +181,7 @@ int Zork::check_override(string usr_input){
         }
         
     }
-    for(int i = 0; i < curr_room->creatures.size(); i++){
-        for(int l = 0; l < curr_room->creatures[i]->triggers.size(); l++){
-
-            trig = curr_room->creatures[i]->triggers[l];
-
-            int trig_command_found = 0;
-            for(int j = 0; j < trig->commands.size(); j++){
-                if(trig->commands[j] == usr_input || trig->commands[j] == ""){
-                    trig_command_found = 1;
-                    break;
-                }
-            }
-            if(trig_command_found){
-                int num_conditions = trig->conditions.size();
-                int num_conditions_passed = 0;
-
-                for(int j = 0; j < num_conditions; j++){
-                    if(find_item(trig->conditions[j]->object)){
-                        Item* trig_obj = find_item(trig->conditions[j]->object);
-                        if(trig_obj->status == trig->conditions[j]->status){
-                            num_conditions_passed++;
-                        }
-                    }
-                    else if(find_container(trig->conditions[j]->object)){
-                        Container * trig_obj = find_container(trig->conditions[j]->object);
-                        if(trig_obj->status == trig->conditions[j]->status){
-                            num_conditions_passed++;
-                        }
-                    }
-
-                }
-                if(num_conditions_passed == num_conditions){
-                    for(int k = 0; k < trig->prints.size(); k++){
-                        cout << trig->prints[k] << endl;
-                    }
-                    for(int k = 0; k < trig->actions.size(); k++){
-                        process_command(trig->actions[k],1);
-                    }
-                    if(trig->type == "single"){
-                        curr_room->triggers.erase(curr_room->triggers.begin()+i);
-                    }
-                    return 1;
-                }
-
-            }
-        }
-    }
+    
 
     return 0;
 }
@@ -570,9 +544,19 @@ int Zork::process_command(string usr_input, int dev_mode){
 
 Item* Zork::find_item(string item) {
     // NOTE: Error if room is not in list (Not sure if it matters)
-    for (unsigned int i = 0; i < rooms.size(); i++) {
+    for (unsigned int i = 0; i < items.size(); i++) {
         if (string(items[i]->name) == item) {
             return items[i];
+        }
+    }
+    return NULL;
+}
+
+Item* Zork::find_item_in_inventory(string item) {
+    // NOTE: Error if room is not in list (Not sure if it matters)
+    for (unsigned int i = 0; i < inventory.size(); i++) {
+        if (string(inventory[i]->name) == item) {
+            return inventory[i];
         }
     }
     return NULL;
