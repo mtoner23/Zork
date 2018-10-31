@@ -311,12 +311,13 @@ int Zork::process_command(string usr_input, int dev_mode){
             }
         }
     }else if(usr_input.substr(0,3) == "put"){
-        stringstream ss(usr_input);
-        istream_iterator<string> begin(ss);
-        istream_iterator<string> end;
-        vector<string> results(begin, end);
-        string item_name = results[1];
-        string container_name = results[3];
+        int idx = (int)usr_input.find(" in ");
+        if(idx == -1){
+            cout << "Usage: put <item> in <container>" << endl;
+            return 0;
+        }
+        string item_name = usr_input.substr(4,idx-4);
+        string container_name = usr_input.substr(idx+4);
         Item* item = NULL;
         Container* container = NULL;
         int item_placed = 0;
@@ -370,6 +371,10 @@ int Zork::process_command(string usr_input, int dev_mode){
     }
     else if(usr_input.substr(0,6) == "attack"){
         int idx = (int)usr_input.find(" with ");
+        if(idx == -1){
+            cout << "Usage: attack <creature> with <item>" << endl;
+            return 0;
+        }
         
         string creature_name = usr_input.substr(7,idx - 7);
         string item_name = usr_input.substr(idx+6);
@@ -453,7 +458,6 @@ int Zork::process_command(string usr_input, int dev_mode){
         }
         
     } else if(usr_input.substr(0,6) == "Delete"){
-        // int idx = (int)usr_input.find(" to ");
         
         string object_name = usr_input.substr(7);
         
