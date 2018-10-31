@@ -24,6 +24,7 @@ public:
     Room(string name);
 	~Room();
 	void print_contents(void);
+	void update_status(string status);
 	// Member variables
 	string name = "";
 	string status = "";
