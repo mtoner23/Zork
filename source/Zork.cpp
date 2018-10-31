@@ -23,42 +23,42 @@ Item* find_item_in_list(vector<Item*> list, string item);
 Zork::~Zork(void){}
 
 Zork::Zork(const char* filename) {
-	xml_document<> doc;
-	xml_node<>* root;
-	ifstream theFile(filename);
+    xml_document<> doc;
+    xml_node<>* root;
+    ifstream theFile(filename);
 
-	if (theFile.fail()) {
-		cout << "FILE: " << filename << " failed to open." << endl;
+    if (theFile.fail()) {
+        cout << "FILE: " << filename << " failed to open." << endl;
         //TODO fix file handling
-	}
-	vector<char> buffer((istreambuf_iterator<char>(theFile)), istreambuf_iterator<char>());
-	buffer.push_back('\0');
-	doc.parse<0>(&buffer[0]);
+    }
+    vector<char> buffer((istreambuf_iterator<char>(theFile)), istreambuf_iterator<char>());
+    buffer.push_back('\0');
+    doc.parse<0>(&buffer[0]);
 
-	root = doc.first_node("map");
+    root = doc.first_node("map");
 
-	for (xml_node<>* curr_node = root->first_node(); curr_node != NULL; curr_node = curr_node->next_sibling()) {
-		if (string(curr_node->name()) == string("room")) {
-			Room* temp = new Room(curr_node);
-			//temp->print_contents();
-			rooms.push_back(temp);
-		}
-		if (string(curr_node->name()) == string("item")) {
-			Item* temp = new Item(curr_node);
-			//temp->print_contents();
-			items.push_back(temp);
-		}
-		if (string(curr_node->name()) == string("container")) {
-			Container* temp = new Container(curr_node);
-			//temp->print_contents();
-			containers.push_back(temp);
-		}
-		if (string(curr_node->name()) == string("creature")) {
-			Creature* temp = new Creature(curr_node);
-			//temp->print_contents();
-			creatures.push_back(temp);
-		}
-	}
+    for (xml_node<>* curr_node = root->first_node(); curr_node != NULL; curr_node = curr_node->next_sibling()) {
+        if (string(curr_node->name()) == string("room")) {
+            Room* temp = new Room(curr_node);
+            //temp->print_contents();
+            rooms.push_back(temp);
+        }
+        if (string(curr_node->name()) == string("item")) {
+            Item* temp = new Item(curr_node);
+            //temp->print_contents();
+            items.push_back(temp);
+        }
+        if (string(curr_node->name()) == string("container")) {
+            Container* temp = new Container(curr_node);
+            //temp->print_contents();
+            containers.push_back(temp);
+        }
+        if (string(curr_node->name()) == string("creature")) {
+            Creature* temp = new Creature(curr_node);
+            //temp->print_contents();
+            creatures.push_back(temp);
+        }
+    }
     curr_room = find_room("Entrance");
     for(int i = 0; i < rooms.size(); i++){
         if(rooms[i]->north != NULL){
@@ -95,12 +95,12 @@ Zork::Zork(const char* filename) {
 }
 
 void Zork::play(void) {
-	cout << curr_room->description << endl;
+    cout << curr_room->description << endl;
     int out = 0;
     int over = 0;
     string usr_input;
-	while (out == 0) {
-		getline(cin, usr_input);
+    while (out == 0) {
+        getline(cin, usr_input);
         //over = check_override();
         //cout << usr_input << endl;
         if(check_override(usr_input)){
@@ -111,7 +111,7 @@ void Zork::play(void) {
         }
         check_override("");
         //check_result();
-	}
+    }
     return;
 }
 
@@ -631,12 +631,13 @@ int Zork::process_command(string usr_input, int dev_mode){
             }
         }
     }else if(usr_input.substr(0,3) == "put"){
-        stringstream ss(usr_input);
-        istream_iterator<string> begin(ss);
-        istream_iterator<string> end;
-        vector<string> results(begin, end);
-        string item_name = results[1];
-        string container_name = results[3];
+        int idx = (int)usr_input.find(" in ");
+        if(idx == -1){
+            cout << "Usage: put <item> in <container>" << endl;
+            return 0;
+        }
+        string item_name = usr_input.substr(4,idx-4);
+        string container_name = usr_input.substr(idx+4);
         Item* item = NULL;
         Container* container = NULL;
         int item_placed = 0;
@@ -691,6 +692,10 @@ int Zork::process_command(string usr_input, int dev_mode){
     }
     else if(usr_input.substr(0,6) == "attack"){
         int idx = (int)usr_input.find(" with ");
+        if(idx == -1){
+            cout << "Usage: attack <creature> with <item>" << endl;
+            return 0;
+        }
         
         string creature_name = usr_input.substr(7,idx - 7);
         string item_name = usr_input.substr(idx+6);
@@ -774,7 +779,6 @@ int Zork::process_command(string usr_input, int dev_mode){
         }
         
     } else if(usr_input.substr(0,6) == "Delete"){
-        // int idx = (int)usr_input.find(" to ");
         
         string object_name = usr_input.substr(7);
         
@@ -858,11 +862,11 @@ Container* Zork::find_container(string container) {
 }
 
 Room* Zork::find_room(string value) {
-	// NOTE: Error if room is not in list (Not sure if it matters)
-	for (unsigned int i = 0; i < rooms.size(); i++) {
-		if (string(rooms[i]->name) == value) {
-			return rooms[i];
-		}
-	}
-	return NULL;
+    // NOTE: Error if room is not in list (Not sure if it matters)
+    for (unsigned int i = 0; i < rooms.size(); i++) {
+        if (string(rooms[i]->name) == value) {
+            return rooms[i];
+        }
+    }
+    return NULL;
 }
