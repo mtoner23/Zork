@@ -20,42 +20,42 @@ using namespace rapidxml;
 Trigger::Trigger(xml_node <> * root) {
 
 	for (xml_node<> * curr_node = root->first_node(); curr_node; curr_node = curr_node->next_sibling()) {
+		DEBUG("Node Name: %s", curr_node->name());
 		if (string(curr_node->name()) == string("type")) {
 			this->type = curr_node->value();
 			DEBUG("Trigger Type: %s\n", this->type.c_str());
 		}
 		else if (string(curr_node->name()) == string("command")) {
-			this->command = curr_node->value();
-			DEBUG("Trigger Command: %s\n", this->command.c_str());
+			DEBUG("Trigger Command: %s\n", curr_node->value());
+			commands.push_back(curr_node->value());
 		}
 		else if (string(curr_node->name()) == string("condition")) {
+			trigger_condition * new_trigger = new trigger_condition;
 			for (xml_node<> * condition_node = curr_node->first_node(); condition_node; condition_node = condition_node->next_sibling()) {
 				if (string(condition_node->name()) == string("has")) {
-					this->condition.has = string(condition_node->value());
-					//DEBUG("Trigger Condtion has: %s\n", this->condition.has.c_str());
-					DEBUG("Trigger Condtion has: %s\n", this->condition.has.c_str());
+					DEBUG("Trigger Condtion has: %s\n", condition_node->value());
+					new_trigger->has = string(condition_node->value());
 				}
-				if (string(condition_node->name()) == string("object")) {
-					this->condition.object = string(condition_node->value());
-					DEBUG("Trigger Condition object: %s\n", this->condition.object.c_str());
+				else if (string(condition_node->name()) == string("object")) {
+					DEBUG("Trigger Condition object: %s\n", condition_node->value());
+					new_trigger->object = string(condition_node->value());
 				}
-				if (string(condition_node->name()) == string("owner")) {
-					this->condition.owner = string(condition_node->value());
-					DEBUG("Trigger Condition owner: %s\n", this->condition.owner.c_str());
+				else if (string(condition_node->name()) == string("owner")) {
+					DEBUG("Trigger Condition owner: %s\n", condition_node->value());		
+					new_trigger->owner = string(condition_node->value());
 				}
-				if (string(condition_node->name()) == string("status")) {
-					this->condition.status = string(condition_node->value());
-					DEBUG("Trigger Condition Status: %s\n", this->condition.status.c_str());
+				else if (string(condition_node->name()) == string("status")) {
+					DEBUG("Trigger Condition Status: %s\n", condition_node->value());
+					new_trigger->status = string(condition_node->value());
 				}
 			}
+			conditions.push_back(new_trigger);
 		}
 		else if (string(curr_node->name()) == string("print")) {
-			this->print = curr_node->value();
-			DEBUG("Trigger Print: %s\n", this->print.c_str());
+			prints.push_back(curr_node->value());
 		}
 		else if (string(curr_node->name()) == string("action")) {
-			this->action = curr_node->value();
-			DEBUG("Trigger Print: %s\n", this->action.c_str());
+			actions.push_back(curr_node->value());
 		}
 	}
 }
@@ -63,12 +63,17 @@ Trigger::Trigger(xml_node <> * root) {
 Trigger::~Trigger() {}
 
 void Trigger::print_contents(void) {
-	printf("Trigger Type: %s\n", this->type.c_str());
-	printf("Trigger Command: %s\n", this->command.c_str());
-	printf("Trigger Condition has: %s\n", this->condition.has.c_str());
-	printf("Trigger Condition object: %s\n", this->condition.object.c_str());
-	printf("Trigger Condition owner: %s\n", this->condition.owner.c_str());
-	printf("Trigger Condition status: %s\n", this->condition.status.c_str());
-	printf("Trigger Print: %s\n", this->print.c_str());
-	printf("Trigger Action: %s\n", this->action.c_str());
+	for (unsigned int i = 0; i < prints.size(); i++) {
+		printf("Print: %s\n", prints[i].c_str());
+	}
+	for (unsigned int i = 0; i < actions.size(); i++) {
+		printf("Action: %s\n", actions[i].c_str());
+	}
+	for (unsigned int i = 0; i < commands.size(); i++) {
+		printf("Command: %s\n", commands[i].c_str());
+	}
+	for (unsigned int i = 0; i < conditions.size(); i++) {
+		printf("Conidtion object: %s\n", conditions[i]->object.c_str());
+		printf("Conidtion status: %s\n", conditions[i]->status.c_str());
+	}
 }

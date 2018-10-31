@@ -29,10 +29,10 @@ public:
 	vector<Creature*> creatures;
 	void play(void);
     int process_command(string,int);
-    void check_override(string);
+    int check_override(string);
     Room* find_room(string value);
     Item* find_item(string);
-    Item* search_inventory(string);
+    Item* find_item_in_inventory(string);
     Creature* find_creature(string);
     Container* find_container(string);
 private:
