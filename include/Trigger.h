@@ -25,10 +25,10 @@ public:
 	~Trigger();
 	void print_contents(void);
 	string type = "";
-	string command = "";
-	trigger_condition condition;
-	string print = "";
-	string action = "";
+	vector<string> commands;
+	vector<trigger_condition*> conditions;
+	vector<string> prints;
+	vector<string> actions;
 };
 
 #endif
