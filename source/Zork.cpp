@@ -103,6 +103,9 @@ void Zork::play(void) {
 		getline(cin, usr_input);
         //over = check_override();
         //cout << usr_input << endl;
+        if(check_override(usr_input)){
+            continue;
+        }
         if(!over){
             out = process_command(usr_input,0);
         }
@@ -111,24 +114,102 @@ void Zork::play(void) {
     return;
 }
 
-void Zork::check_override(string usr_input){
+int Zork::check_override(string usr_input){
     Trigger * trig;
     for(int i = 0; i < curr_room->triggers.size(); i++){
         trig = curr_room->triggers[i];
-        if(trig->command == usr_input || trig->command == ""){
-            Item * trig_obj = find_item(trig->condition.object);
-            if(trig_obj->status == trig->condition.status){
-                if(trig->print != ""){
-                    cout << trig->print << endl;
-                }
-//                for(int j = 0; j < creature->attack.actions.size(); j++){
-//                    //cout << "Action: " << creature->attack.actions[i] << endl;
-//                    process_command(creature->attack.actions[j],1);
-//                }
+
+        int trig_command_found = 0;
+        for(int j = 0; j < trig->commands.size(); j++){
+            if(trig->commands[j] == usr_input || trig->commands[j] == ""){
+                trig_command_found = 1;
+                break;
             }
+        }
+        if(trig_command_found){
+            int num_conditions = trig->conditions.size();
+            int num_conditions_passed = 0;
+
+            for(int j = 0; j < num_conditions; j++){
+                if(find_item(trig->conditions[j]->object)){
+                    Item* trig_obj = find_item(trig->conditions[j]->object);
+                    if(trig_obj->status == trig->conditions[j]->status){
+                        num_conditions_passed++;
+                    }
+                }
+                else if(find_container(trig->conditions[j]->object)){
+                    Container * trig_obj = find_container(trig->conditions[j]->object);
+                    if(trig_obj->status == trig->conditions[j]->status){
+                        num_conditions_passed++;
+                    }
+                }
+
+            }
+            if(num_conditions_passed == num_conditions){
+                for(int k = 0; k < trig->prints.size(); k++){
+                    cout << trig->prints[k] << endl;
+                }
+                for(int k = 0; k < trig->actions.size(); k++){
+                    process_command(trig->actions[k],1);
+                }
+                if(trig->type == "single"){
+                    curr_room->triggers.erase(curr_room->triggers.begin()+i);
+                }
+                return 1;
+            }
+
         }
         
     }
+    for(int i = 0; i < curr_room->creatures.size(); i++){
+        for(int l = 0; l < curr_room->creatures[i]->triggers.size(); l++){
+
+            trig = curr_room->creatures[i]->triggers[l];
+
+            int trig_command_found = 0;
+            for(int j = 0; j < trig->commands.size(); j++){
+                if(trig->commands[j] == usr_input || trig->commands[j] == ""){
+                    trig_command_found = 1;
+                    break;
+                }
+            }
+            if(trig_command_found){
+                int num_conditions = trig->conditions.size();
+                int num_conditions_passed = 0;
+
+                for(int j = 0; j < num_conditions; j++){
+                    if(find_item(trig->conditions[j]->object)){
+                        Item* trig_obj = find_item(trig->conditions[j]->object);
+                        if(trig_obj->status == trig->conditions[j]->status){
+                            num_conditions_passed++;
+                        }
+                    }
+                    else if(find_container(trig->conditions[j]->object)){
+                        Container * trig_obj = find_container(trig->conditions[j]->object);
+                        if(trig_obj->status == trig->conditions[j]->status){
+                            num_conditions_passed++;
+                        }
+                    }
+
+                }
+                if(num_conditions_passed == num_conditions){
+                    for(int k = 0; k < trig->prints.size(); k++){
+                        cout << trig->prints[k] << endl;
+                    }
+                    for(int k = 0; k < trig->actions.size(); k++){
+                        process_command(trig->actions[k],1);
+                    }
+                    if(trig->type == "single"){
+                        curr_room->triggers.erase(curr_room->triggers.begin()+i);
+                    }
+                    return 1;
+                }
+
+            }
+        }
+    }
+
+    return 0;
 }
 
 int Zork::process_command(string usr_input, int dev_mode){
@@ -354,6 +435,7 @@ int Zork::process_command(string usr_input, int dev_mode){
         else if(container->accepts.size() != 0){
             for(int i = 0; i < container->accepts.size(); i++){
                 if(container->accepts[i] == item_name){
+                    container->items.push_back(item);
                     container->accepts.erase(container->accepts.begin()+i);
                     cout << item_name << " placed in " << container_name << endl;
                     item_placed = 1;

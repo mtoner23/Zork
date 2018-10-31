@@ -30,26 +30,26 @@ Trigger::Trigger(xml_node <> * root) {
 			commands.push_back(curr_node->value());
 		}
 		else if (string(curr_node->name()) == string("condition")) {
-			trigger_condition new_trigger;
+			trigger_condition * new_trigger = new trigger_condition;
 			for (xml_node<> * condition_node = curr_node->first_node(); condition_node; condition_node = condition_node->next_sibling()) {
 				if (string(condition_node->name()) == string("has")) {
 					DEBUG("Trigger Condtion has: %s\n", condition_node->value());
-					new_trigger.has = string(condition_node->value());
+					new_trigger->has = string(condition_node->value());
 				}
 				else if (string(condition_node->name()) == string("object")) {
 					DEBUG("Trigger Condition object: %s\n", condition_node->value());
-					new_trigger.object = string(condition_node->value());
+					new_trigger->object = string(condition_node->value());
 				}
 				else if (string(condition_node->name()) == string("owner")) {
 					DEBUG("Trigger Condition owner: %s\n", condition_node->value());		
-					new_trigger.owner = string(condition_node->value());
+					new_trigger->owner = string(condition_node->value());
 				}
 				else if (string(condition_node->name()) == string("status")) {
 					DEBUG("Trigger Condition Status: %s\n", condition_node->value());
-					new_trigger.status = string(condition_node->value());
+					new_trigger->status = string(condition_node->value());
 				}
 			}
-			conditions.push_back(&new_trigger);
+			conditions.push_back(new_trigger);
 		}
 		else if (string(curr_node->name()) == string("print")) {
 			prints.push_back(curr_node->value());
@@ -71,5 +71,9 @@ void Trigger::print_contents(void) {
 	}
 	for (unsigned int i = 0; i < commands.size(); i++) {
 		printf("Command: %s\n", commands[i].c_str());
+	}
+	for (unsigned int i = 0; i < conditions.size(); i++) {
+		printf("Conidtion object: %s\n", conditions[i]->object.c_str());
+		printf("Conidtion status: %s\n", conditions[i]->status.c_str());
 	}
 }
