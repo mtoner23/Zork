@@ -589,7 +589,7 @@ int Zork::process_command(string usr_input, int dev_mode){
         if(item != NULL){
             item->update_status(new_status);
         }else if( creature != NULL){
-            creature->update_status(new_status)
+            creature->update_status(new_status);
         }else if( container != NULL){
             container->update_status(new_status);
         }else if( room != NULL){
