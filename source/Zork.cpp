@@ -120,10 +120,17 @@ int Zork::check_override(string usr_input){
         trig = curr_room->triggers[i];
 
         int trig_command_found = 0;
+
         for(int j = 0; j < trig->commands.size(); j++){
             if(trig->commands[j] == usr_input || trig->commands[j] == ""){
                 trig_command_found = 1;
                 break;
+        if(trig->commands.size() > 0){
+            for(int j = 0; j < trig->commands.size(); j++){
+                if(trig->commands[j] == usr_input || trig->commands[j] == ""){
+                    trig_command_found = 1;
+                    break;
+                }
             }
         }
         if(trig_command_found){
