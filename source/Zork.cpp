@@ -813,15 +813,19 @@ int Zork::process_command(string usr_input, int dev_mode){
         Container * container = find_container(object_name);
         Room * room = find_room(object_name);
         
-        
+
         if(item != NULL){
             item->update_status(new_status);
+            cout << "Update " << item->name << " to " << new_status << endl;    
         }else if( creature != NULL){
             creature->update_status(new_status);
+            cout << "Update " << creature->name << " to " << new_status << endl;
         }else if( container != NULL){
             container->update_status(new_status);
+            cout << "Update " << container->name << " to " << new_status << endl;
         }else if( room != NULL){
             room->update_status(new_status);
+            cout << "Update " << room->name << " to " << new_status << endl;
         }
     }else{
         cout << "I do not recognize that command" << endl;
