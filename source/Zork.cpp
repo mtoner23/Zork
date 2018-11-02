@@ -127,7 +127,6 @@ int Zork::check_override(string usr_input){
         if(trig->commands.size() > 0){
             for(int j = 0; j < trig->commands.size(); j++){
                 if(trig->commands[j] == usr_input || trig->commands[j] == ""){
-                    cout << "Trig Command: " << trig->commands[j] << endl;
                     trig_command_found = 1;
                     break;
                 }
@@ -803,6 +802,27 @@ int Zork::process_command(string usr_input, int dev_mode){
             }
         }
         
+    }else if(usr_input.substr(0,6) == "Update"){
+        int idx = (int)usr_input.find(" to ");
+        
+        string object_name = usr_input.substr(4,idx - 4);
+        string new_status = usr_input.substr(idx+4);
+        
+        Item * item = find_item(object_name);
+        Creature * creature = find_creature(object_name);
+        Container * container = find_container(object_name);
+        Room * room = find_room(object_name);
+        
+        
+        if(item != NULL){
+            item->update_status(new_status);
+        }else if( creature != NULL){
+            creature->update_status(new_status);
+        }else if( container != NULL){
+            container->update_status(new_status);
+        }else if( room != NULL){
+            room->update_status(new_status);
+        }
     }else{
         cout << "I do not recognize that command" << endl;
     }

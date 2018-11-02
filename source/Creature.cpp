@@ -94,3 +94,7 @@ Creature::Creature(xml_node <> * root) {
 
 	}
 }
+
+void Creature::update_status(string status){
+	this->status = status;
+}

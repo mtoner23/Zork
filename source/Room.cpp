@@ -108,3 +108,7 @@ Room::Room(xml_node <> * root) {
 
 	}
 }
+
+void Room::update_status(string status){
+	this->status = status;
+}
