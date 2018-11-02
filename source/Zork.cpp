@@ -214,6 +214,7 @@ int Zork::check_override(string usr_input){
                     cout << trig->prints[k] << endl;
                 }
                 for(int k = 0; k < trig->actions.size(); k++){
+                    //cout << trig->actions[k] << endl;
                     process_command(trig->actions[k],1);
                 }
                 if(trig->type != "permanent"){
@@ -322,6 +323,7 @@ int Zork::check_override(string usr_input){
                         cout << trig->prints[k] << endl;
                     }
                     for(int k = 0; k < trig->actions.size(); k++){
+                        //cout << trig->actions[k] << endl;
                         process_command(trig->actions[k],1);
                     }
                     if(trig->type != "permanent"){
@@ -433,6 +435,7 @@ int Zork::check_override(string usr_input){
                         cout << trig->prints[k] << endl;
                     }
                     for(int k = 0; k < trig->actions.size(); k++){
+                        //cout << trig->actions[k] << endl;
                         process_command(trig->actions[k],1);
                     }
                     if(trig->type != "permanent"){
@@ -443,6 +446,118 @@ int Zork::check_override(string usr_input){
                     return 1;
                 }
             }
+        }
+    }
+    /************************************************************
+    Checks Triggers for Items
+    ************************************************************/
+    for(int l = 0; l < curr_room->items.size(); l++){
+        for(int i = 0; i < curr_room->items[l]->triggers.size(); i++){
+            trig = curr_room->items[l]->triggers[i];
+            int trig_command_found = 0;
+            if(trig->commands.size() > 0){
+                for(int j = 0; j < trig->commands.size(); j++){
+                    if(trig->commands[j] == usr_input || trig->commands[j] == ""){
+                        trig_command_found = 1;
+                        break;
+                    }
+                }
+            }else{
+                trig_command_found = 1;
+            }
+            if(trig_command_found){
+                int num_conditions = trig->conditions.size();
+                int num_conditions_passed = 0;
+
+                for(int j = 0; j < num_conditions; j++){
+                    if(find_item(trig->conditions[j]->object)){
+                        Item* trig_obj = find_item(trig->conditions[j]->object);
+                        if((trig_obj->status == trig->conditions[j]->status) && trig->conditions[j]->has == ""){
+                            num_conditions_passed++;
+                        }
+                        else if(trig->conditions[j]->has != ""){
+                            if(trig->conditions[j]->owner == "inventory"){
+                                if(find_item_in_inventory(trig_obj->name) != NULL && trig->conditions[j]->has == "yes"){
+                                    num_conditions_passed++;
+                                }
+                                else if(find_item_in_inventory(trig_obj->name) == NULL && trig->conditions[j]->has == "no"){
+                                    num_conditions_passed++;
+                                }
+                            }
+                            if(find_room(trig->conditions[j]->owner) != NULL){
+                                Room* temp_room = find_room(trig->conditions[j]->owner);
+                                if(find_item_in_list(temp_room->items,trig_obj->name) != NULL && trig->conditions[j]->has == "yes"){
+                                    num_conditions_passed++;
+                                }
+                                else if(find_item_in_list(temp_room->items,trig_obj->name) == NULL && trig->conditions[j]->has == "no"){
+                                    num_conditions_passed++;
+                                }
+                            }
+                            if(find_container(trig->conditions[j]->owner) != NULL){
+                                Container* temp_container = find_container(trig->conditions[j]->owner);
+                                if(find_item_in_list(temp_container->items,trig_obj->name) != NULL && trig->conditions[j]->has == "yes"){
+                                    num_conditions_passed++;
+                                }
+                                else if(find_item_in_list(temp_container->items,trig_obj->name) == NULL && trig->conditions[j]->has == "no"){
+                                    num_conditions_passed++;
+                                }
+                            }
+                        }
+                    }
+                    else if(find_container(trig->conditions[j]->object)){
+                        Container * trig_obj = find_container(trig->conditions[j]->object);
+                        if(trig_obj->status == trig->conditions[j]->status){
+                            num_conditions_passed++;
+                        }
+                        else if(trig->conditions[j]->has != ""){
+                            if(trig->conditions[j]->owner == "inventory"){
+                                if(find_item_in_inventory(trig_obj->name) != NULL && trig->conditions[j]->has == "yes"){
+                                    num_conditions_passed++;
+                                }
+                                else if(find_item_in_inventory(trig_obj->name) == NULL && trig->conditions[j]->has == "no"){
+                                    num_conditions_passed++;
+                                }
+                            }
+                            if(find_room(trig->conditions[j]->owner) != NULL){
+                                Room* temp_room = find_room(trig->conditions[j]->owner);
+                                if(find_item_in_list(temp_room->items,trig_obj->name) != NULL && trig->conditions[j]->has == "yes"){
+                                    num_conditions_passed++;
+                                }
+                                else if(find_item_in_list(temp_room->items,trig_obj->name) == NULL && trig->conditions[j]->has == "no"){
+                                    num_conditions_passed++;
+                                }
+                            }
+                            if(find_container(trig->conditions[j]->owner) != NULL){
+                                Container* temp_container = find_container(trig->conditions[j]->owner);
+                                if(find_item_in_list(temp_container->items,trig_obj->name) != NULL && trig->conditions[j]->has == "yes"){
+                                    num_conditions_passed++;
+                                }
+                                else if(find_item_in_list(temp_container->items,trig_obj->name) == NULL && trig->conditions[j]->has == "no"){
+                                    num_conditions_passed++;
+                                }
+                            }
+                        }
+                    }
+
+                }
+                if(num_conditions_passed == num_conditions){
+                    for(int k = 0; k < trig->prints.size(); k++){
+                        cout << trig->prints[k] << endl;
+                    }
+                    for(int k = 0; k < trig->actions.size(); k++){
+                        //cout << trig->actions[k] << endl;
+                        process_command(trig->actions[k],1);
+                    }
+                    if(trig->type != "permanent"){
+                        //cout << "i: " << i << endl;
+                        curr_room->items[l]->triggers.erase(curr_room->items[l]->triggers.begin()+i);
+                        //cout << "number of " << creatures[l]->name << " triggers: " << curr_room->creatures[l]->triggers.size() << endl;
+                    }
+                    return 1;
+                }
+
+            }
+            
         }
     }
     return 0;
@@ -805,9 +920,11 @@ int Zork::process_command(string usr_input, int dev_mode){
     }else if(usr_input.substr(0,6) == "Update"){
         int idx = (int)usr_input.find(" to ");
         
-        string object_name = usr_input.substr(4,idx - 4);
+        string object_name = usr_input.substr(7,idx - 7);
         string new_status = usr_input.substr(idx+4);
-        
+
+        //cout << "Update " << object_name << " to " << new_status << endl;
+
         Item * item = find_item(object_name);
         Creature * creature = find_creature(object_name);
         Container * container = find_container(object_name);
@@ -816,7 +933,7 @@ int Zork::process_command(string usr_input, int dev_mode){
 
         if(item != NULL){
             item->update_status(new_status);
-            cout << "Update " << item->name << " to " << new_status << endl;    
+            //cout << "Update " << item->name << " to " << new_status << endl;    
         }else if( creature != NULL){
             creature->update_status(new_status);
             cout << "Update " << creature->name << " to " << new_status << endl;
