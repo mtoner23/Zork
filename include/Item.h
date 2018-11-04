@@ -15,8 +15,8 @@ using namespace std;
 using namespace rapidxml;
 
 struct turn_on {
-	string print = "";
-	string action = "";
+    vector<string> prints;
+    vector <string> actions;
 };
 
 class Item: public ZorkObject {

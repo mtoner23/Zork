@@ -25,8 +25,8 @@ void Item::print_contents(void) {
 	printf("Item Status: %s\n", this->status.c_str());
 	printf("Item Description: %s\n", this->description.c_str());
 	printf("Item Writing: %s\n", this->writing.c_str());
-	printf("Item Turn-on Print is %s\n", this->turnon.print.c_str());
-	printf("Item Turn-on Action is %s\n", this->turnon.action.c_str());
+	//printf("Item Turn-on Print is %s\n", this->turnon.print.c_str());
+	//printf("Item Turn-on Action is %s\n", this->turnon.action.c_str());
 	
 	for (unsigned int i = 0; i < triggers.size(); i++) {
 		triggers[i]->print_contents();
@@ -65,15 +65,17 @@ Item::Item(xml_node <> * root) {
 			triggers.push_back(new Trigger(curr_node));
 		}
 		else if (string(curr_node->name()) == string("turnon")) {
-
-			if (curr_node->first_node("print")) {
-				this->turnon.print = string(curr_node->first_node("print")->value());
-				DEBUG("Item Turn-on Print is %s\n", this->turnon.print.c_str());
-			}
-			if (curr_node->first_node("action")) {
-				this->turnon.action = string(curr_node->first_node("action")->value());
-				DEBUG("Item Turn-on Action is %s\n", this->turnon.action.c_str());
-			}
+            
+            for(xml_node<> *turnon_node = curr_node->first_node(); turnon_node; turnon_node = turnon_node->next_sibling()){
+                if (string(turnon_node->name()) == "print") {
+                    this->turnon.prints.push_back(turnon_node->value());
+                    //cout << turnon_node->value() << endl;
+                }
+                if (string(turnon_node->name()) == "action") {
+                    this->turnon.actions.push_back(turnon_node->value());
+                }
+            }
+			
 			
 		}
 

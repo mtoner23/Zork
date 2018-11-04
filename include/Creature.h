@@ -21,7 +21,7 @@ struct attack_condition {
 
 struct Attack {
 	attack_condition condition;
-	string print = ""; //TODO maybe multiple prints
+    vector<string> prints;
 	vector <string> actions;
 };
 

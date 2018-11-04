@@ -97,7 +97,7 @@ Zork::Zork(const char* filename) {
 void Zork::play(void) {
     cout << curr_room->description << endl;
     int out = 0;
-    int over = 0;
+    //int over = 0;
     string usr_input;
     while (out == 0) {
         getline(cin, usr_input);
@@ -132,7 +132,7 @@ int Zork::check_override(string usr_input){
             trig_command_found = 1;
         }
         if(trig_command_found){
-            int num_conditions = trig->conditions.size();
+            int num_conditions = (int)trig->conditions.size();
             int num_conditions_passed = 0;
 
             for(int j = 0; j < num_conditions; j++){
@@ -241,7 +241,7 @@ int Zork::check_override(string usr_input){
                 trig_command_found = 1;
             }
             if(trig_command_found){
-                int num_conditions = trig->conditions.size();
+                int num_conditions = (int)trig->conditions.size();
                 int num_conditions_passed = 0;
 
                 for(int j = 0; j < num_conditions; j++){
@@ -353,7 +353,7 @@ int Zork::check_override(string usr_input){
                 trig_command_found = 1;
             }
             if(trig_command_found){
-                int num_conditions = trig->conditions.size();
+                int num_conditions = (int)trig->conditions.size();
                 int num_conditions_passed = 0;
 
                 for(int j = 0; j < num_conditions; j++){
@@ -463,7 +463,7 @@ int Zork::check_override(string usr_input){
                 trig_command_found = 1;
             }
             if(trig_command_found){
-                int num_conditions = trig->conditions.size();
+                int num_conditions = (int)trig->conditions.size();
                 int num_conditions_passed = 0;
 
                 for(int j = 0; j < num_conditions; j++){
@@ -639,7 +639,7 @@ int Zork::process_command(string usr_input, int dev_mode){
         for(int i = 0; i < curr_room->containers.size() && item == NULL; i++){
             Container* container = curr_room->containers[i];
             for(int j = 0; j < container->items.size(); j++){
-                cout << "Status: " << container->status << endl;
+                //cout << "Status: " << container->status << endl;
                 if(container->items[j]->name == item_name && (container->status == "open" || container->status == "unlocked")){
                     item = container->items[j];
                     container->items.erase(container->items.begin()+j);
@@ -710,14 +710,18 @@ int Zork::process_command(string usr_input, int dev_mode){
         }
         if(item != NULL){
             cout << "You activate the " << item_name << "." << endl;
-            if(item->turnon.action == ""){
+            if(item->turnon.actions.size() == 0){
                 cout << "Nothing happened." << endl;
             }
             else{
-                string update_text = item->turnon.action.substr(item->turnon.action.rfind("to")+ string("to ").size() );
-                item->update_status(update_text);
-                //cout << "Updated " << item->name << " to " << item->status << endl;
-                cout << item->turnon.print << endl;
+                for(int i = 0; i < item->turnon.actions.size(); i++){
+                    //cout << item->turnon.actions[i] << endl;
+                    process_command(item->turnon.actions[i], 1);
+                }
+                for(int i = 0; i < item->turnon.prints.size(); i++){
+                    cout << item->turnon.prints[i] << endl;
+                }
+                
             }
         }else{
             cout << item_name << " is not in inventory." << endl;
@@ -870,8 +874,8 @@ int Zork::process_command(string usr_input, int dev_mode){
                     //cout << "attack object status: " << creature->attack.condition.status << "our status: " << inventory[j]->status << endl;
                     if((creature->attack.condition.object == "" || creature->attack.condition.object ==  inventory[j]->name) && (creature->attack.condition.status == inventory[j]->status || creature->attack.condition.status == "")){
                         success = 1;
-                        if(creature->attack.print != ""){
-                            cout << creature->attack.print << endl;
+                        for(int i = 0; i < creature->attack.prints.size(); i++){
+                            cout << creature->attack.prints[i] << endl;
                         }
                     }
                 }
@@ -895,6 +899,7 @@ int Zork::process_command(string usr_input, int dev_mode){
         
         Item * item = find_item(object_name);
         Creature * creature = find_creature(object_name);
+        Container * cont_obj = find_container(object_name);
         
         Room * room = find_room(dest_name);
         Container * container = find_container(dest_name);
@@ -937,7 +942,14 @@ int Zork::process_command(string usr_input, int dev_mode){
                 }
             }
         }
-        
+        if(item != NULL){
+            for(int j = 0; j < inventory.size() && !found; j++){
+                if(inventory[j] == item){
+                    inventory.erase(inventory.begin() + j);
+                    found = 1;
+                }
+            }
+        }
     }else if(usr_input.substr(0,6) == "Update" && dev_mode == 1){
         int idx = (int)usr_input.find(" to ");
         

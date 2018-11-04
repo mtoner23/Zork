@@ -58,7 +58,10 @@
     <status>lit</status>
     <turnon>
       <print>the torch has erupted into a menacing inferno</print>
+      <print>ZOOOORRRKKKK</print>
       <action>Update torch to inferno</action>
+      <action>Delete torch</action>
+      <action>Add torch to chest</action>
     </turnon>
   </item>
   <item>

@@ -33,7 +33,7 @@ void Creature::print_contents(void) {
 	}
 	printf("Creature Attack Condition Object: %s\n", this->attack.condition.object.c_str());
 	printf("Creature Attack Condition Status: %s\n", this->attack.condition.status.c_str());
-	printf("Creature Attack Print: %s\n", this->attack.print.c_str());
+	//printf("Creature Attack Print: %s\n", this->attack.prints.c_str());
 	
 	for (unsigned int i = 0; i < this->attack.actions.size(); i++) {
 		printf("Creature Attack Action: %s\n", this->attack.actions[i].c_str());
@@ -66,22 +66,27 @@ Creature::Creature(xml_node <> * root) {
 			triggers.push_back(new Trigger(curr_node));
 		}
 		else if (string(curr_node->name()) == string("attack")) {
-
-			if (curr_node->first_node("print")) {
-				this->attack.print = string(curr_node->first_node("print")->value());
-				DEBUG("Attack Print is %s\n", this->attack.print.c_str());
-			}
-			if (curr_node->first_node("condition")) {
-				//xml_node<> * temp_node = curr_node->first_node("condition");
-				if (curr_node->first_node("condition")->first_node("object")) {
-					this->attack.condition.object = string(curr_node->first_node("condition")->first_node("object")->value());
-					DEBUG("Attack Condition Object is %s\n", this->attack.condition.object.c_str());
-				}
-				if (curr_node->first_node("condition")->first_node("status")) {
-					this->attack.condition.status = string(curr_node->first_node("condition")->first_node("status")->value());
-					DEBUG("Attack Condition Status is %s\n", this->attack.condition.status.c_str());
-				}
-			}
+            
+            for(xml_node<>* attack_node = curr_node->first_node(); attack_node; attack_node=attack_node->next_sibling()){
+                if (string(attack_node->name()) == "print") {
+                    this->attack.prints.push_back(string(curr_node->first_node("print")->value()));
+                }
+                if (string(attack_node->name()) == "condition") {
+                    //xml_node<> * temp_node = curr_node->first_node("condition");
+                    for(xml_node<>* cond_node = attack_node->first_node(); cond_node; cond_node = cond_node->next_sibling()){
+                        if (string(cond_node->name()) == "object") {
+                            this->attack.condition.object = string(cond_node->value());
+                            DEBUG("Attack Condition Object is %s\n", this->attack.condition.object.c_str());
+                        }
+                        if (string(cond_node->name()) == "status") {
+                            this->attack.condition.status = string(cond_node->value());
+                            DEBUG("Attack Condition Status is %s\n", this->attack.condition.status.c_str());
+                        }
+                    }
+                    
+                }
+            }
+			
 			
 			for (xml_node<>* action_node = curr_node->first_node("action"); action_node; action_node = action_node->next_sibling()) {
 				if (string(action_node->name()) != string("action")) {
