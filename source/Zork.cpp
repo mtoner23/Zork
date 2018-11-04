@@ -623,6 +623,10 @@ int Zork::process_command(string usr_input, int dev_mode){
             cout << "This isn't the exit" << endl;
         }
     }else if(usr_input.substr(0,4) == "take"){
+        if(usr_input.size() < 5){
+            cout << "Usage: take <item>" << endl;
+            return 0;
+        }
         string item_name = usr_input.substr(5); //String starting after word take
         Item* item = NULL;
         for(int i = 0; i < curr_room->items.size(); i ++){
@@ -635,7 +639,8 @@ int Zork::process_command(string usr_input, int dev_mode){
         for(int i = 0; i < curr_room->containers.size() && item == NULL; i++){
             Container* container = curr_room->containers[i];
             for(int j = 0; j < container->items.size(); j++){
-                if(container->items[j]->name == item_name && container->status == "open"){
+                cout << "Status: " << container->status << endl;
+                if(container->items[j]->name == item_name && (container->status == "open" || container->status == "unlocked")){
                     item = container->items[j];
                     container->items.erase(container->items.begin()+j);
                     break;
@@ -649,6 +654,10 @@ int Zork::process_command(string usr_input, int dev_mode){
             cout << "There is no item \"" << item_name << "\" in this room" << endl;
         }
     }else if(usr_input.substr(0,4) == "drop"){
+        if(usr_input.size() < 5){
+            cout << "Usage: drop <item>" << endl;
+            return 0;
+        }
         string item_name = usr_input.substr(5); // String starting after word drop
         Item* item = NULL;
         for(int i = 0; i < inventory.size(); i ++){
@@ -665,6 +674,10 @@ int Zork::process_command(string usr_input, int dev_mode){
             cout << "There is no item \"" << item_name << "\" in your inventory" << endl;
         }
     }else if(usr_input.substr(0,4) == "read"){
+        if(usr_input.size() < 5){
+            cout << "Usage: read <item>" << endl;
+            return 0;
+        }
         string item_name = usr_input.substr(5); // String starting after word read
         Item* item = NULL;
         for(int i = 0; i < inventory.size(); i ++){
@@ -683,6 +696,10 @@ int Zork::process_command(string usr_input, int dev_mode){
             cout << "No item " << item_name << " in inventory." << endl;
         }
     }else if(usr_input.substr(0,7) == "turn on"){
+        if(usr_input.size() < 8){
+            cout << "Usage: turn on <item>" << endl;
+            return 0;
+        }
         string item_name = usr_input.substr(8);
         Item* item = NULL;
         for(int i = 0; i < inventory.size(); i ++){
@@ -708,6 +725,10 @@ int Zork::process_command(string usr_input, int dev_mode){
 
     
     }else if(usr_input.substr(0,4) == "open"){
+        if(usr_input.size() < 5){
+            cout << "Usage: open <container>" << endl;
+            return 0;
+        }
         string container_name = usr_input.substr(5);
         Container* container = NULL;
         for(int i = 0; i < curr_room->containers.size(); i++){
@@ -785,7 +806,8 @@ int Zork::process_command(string usr_input, int dev_mode){
             for(int i = 0; i < container->accepts.size(); i++){
                 if(container->accepts[i] == item_name){
                     container->items.push_back(item);
-                    container->accepts.erase(container->accepts.begin()+i);
+                    container->update_status("open");
+                    //container->accepts.erase(container->accepts.begin()+i);
                     cout << item_name << " placed in " << container_name << endl;
                     item_placed = 1;
                     break;
@@ -889,7 +911,7 @@ int Zork::process_command(string usr_input, int dev_mode){
             }
         }
         
-    } else if(usr_input.substr(0,6) == "Delete"){
+    } else if(usr_input.substr(0,6) == "Delete" && dev_mode){
         
         string object_name = usr_input.substr(7);
         
@@ -916,7 +938,7 @@ int Zork::process_command(string usr_input, int dev_mode){
             }
         }
         
-    }else if(usr_input.substr(0,6) == "Update"){
+    }else if(usr_input.substr(0,6) == "Update" && dev_mode == 1){
         int idx = (int)usr_input.find(" to ");
         
         string object_name = usr_input.substr(7,idx - 7);
@@ -935,13 +957,13 @@ int Zork::process_command(string usr_input, int dev_mode){
             //cout << "Update " << item->name << " to " << new_status << endl;    
         }else if( creature != NULL){
             creature->update_status(new_status);
-            cout << "Update " << creature->name << " to " << new_status << endl;
+            //cout << "Update " << creature->name << " to " << new_status << endl;
         }else if( container != NULL){
             container->update_status(new_status);
-            cout << "Update " << container->name << " to " << new_status << endl;
+            //cout << "Update " << container->name << " to " << new_status << endl;
         }else if( room != NULL){
             room->update_status(new_status);
-            cout << "Update " << room->name << " to " << new_status << endl;
+            //cout << "Update " << room->name << " to " << new_status << endl;
         }
     }else{
         cout << "I do not recognize that command" << endl;
