@@ -32,6 +32,7 @@ public:
     Creature(string name);
 	~Creature();
 	void print_contents(void);
+	void update_status(string status);
 	// Member variables
 	string name = "";
 	string status = "";
