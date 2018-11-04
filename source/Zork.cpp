@@ -910,9 +910,13 @@ int Zork::process_command(string usr_input, int dev_mode){
             }else{
                 container->items.push_back(item);
             }
-        }else{
+        }else if(creature != NULL){
             if(room != NULL){
                 room->creatures.push_back(creature);
+            }
+        }else{
+            if(room != NULL){
+                room->containers.push_back(cont_obj);
             }
         }
         
