@@ -750,6 +750,8 @@ int Zork::process_command(string usr_input, int dev_mode){
                 //cout << "Action: " << creature->attack.actions[i] << endl;
                 process_command(creature->attack.actions[i],1);
             }
+        }else{
+            cout << "Your attack wasn't effective" << endl;
         }
         
     } else if(usr_input.substr(0,3) == "Add" && dev_mode){
