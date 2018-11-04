@@ -106,11 +106,8 @@ void Zork::play(void) {
         if(check_override(usr_input)){
             continue;
         }
-        if(!over){
-            out = process_command(usr_input,0);
-        }
+        out = process_command(usr_input,0);
         check_override("");
-        //check_result();
     }
     return;
 }

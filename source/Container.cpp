@@ -72,6 +72,5 @@ Container::Container(xml_node <> * root) {
 		else if (string(curr_node->name()) == string("trigger")) {
 			triggers.push_back(new Trigger(curr_node));
 		}
-
 	}
 }
